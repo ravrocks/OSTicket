@@ -219,6 +219,41 @@ if($_POST && !$errors):
                                 $ticket->getId(), $ticket->getNumber()))
                         );
 
+                ///////////////////////////Code for modifying SLA based on status change/////////////////////////////////////////////////
+                require(INCLUDE_DIR.'ost-config.php');
+                $type=DBTYPE;
+                $host=DBHOST;
+                $dname=DBNAME;
+                $user=DBUSER;
+                $pass=DBPASS;
+                //echo($type.':host='.$host.';dbname='.$dname);
+                $conOst = new PDO($type.':host='.$host.';dbname='.$dname,$user,$pass);
+                $sla_query=null;
+                switch((int)$ticket->getStatusId())
+                {
+                    case 10:
+                        if($ticket->getSLAId()!=4)
+                            $sla_query="UPDATE ost_ticket SET sla_id=4 WHERE ticket_id=:ticketid";
+                    break;
+                    case 6:
+                        if($ticket->getSLAId()!=5)
+                            $sla_query="UPDATE ost_ticket SET sla_id=5 WHERE ticket_id=:ticketid";
+                    break;
+                    case 9:
+                        if($ticket->getSLAId()!=6)
+                            $sla_query="UPDATE ost_ticket SET sla_id=6 WHERE ticket_id=:ticketid";
+                    break;
+                    default:
+                        $sla_query=null;
+                }
+                if($sla_query)
+                 {
+                    $stmtOst = $conOst->prepare($sla_query);
+                    $stmtOst->execute(array('ticketid' => (int)$ticket->getId()));
+                 }
+                 $conOst=null;
+                ////////////////////////////////////////////////////////////////////////////////////////////
+
                 // Clear attachment list
                 $response_form->setSource(array());
                 $response_form->getField('attachments')->reset();

@@ -105,7 +105,15 @@ if ($_POST && is_object($ticket) && $ticket->getId()) {
                         $reopen_status=3; //actually reopened Event
                         $open_status=1;
                         $resolved_status=9;
-                        $conOstt = new PDO('mysql:host=localhost;dbname=osTicket', 'root', 'ravrocks$321');
+                        require('client.inc.php');
+                        require(INCLUDE_DIR.'ost-config.php');
+                        $type=DBTYPE;
+                        $host=DBHOST;
+                        $dname=DBNAME;
+                        $user=DBUSER;
+                        $pass=DBPASS;
+                        //echo($type.':host='.$host.';dbname='.$dname);
+                        $conOstt = new PDO($type.':host='.$host.';dbname='.$dname,$user,$pass);
                         //##########################updating status############################################################
                         $sqlOst = "UPDATE ost_ticket SET status_id=:open_status WHERE ticket_id=:ticket and status_id=:resolved_status";
                         $stmtOst = $conOstt->prepare($sqlOst);
@@ -155,7 +163,7 @@ if ($_POST && is_object($ticket) && $ticket->getId()) {
         } elseif(!$errors['err']) {
             $errors['err'] = __('Correct any errors below and try again.');
         }
-        break;
+    break;
     default:
         $errors['err']=__('Unknown action');
     }

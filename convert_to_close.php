@@ -33,7 +33,7 @@
     		###########################################################
     		// Code for changing automatically changing status
             
-            $sqlOst = "UPDATE ost_ticket SET status_id=:closed_status,closed=:closed_time,updated=:updated_time WHERE ticket_id=:ticket and status_id=:resolved_status";
+            $sqlOst = "UPDATE ost_ticket SET status_id=:closed_status,closed=:closed_time,updated=:updated_time,isoverdue=0 WHERE ticket_id=:ticket and status_id=:resolved_status";
       		$stmtOst = $conOst->prepare($sqlOst);
       		$stmtOst->execute(array('closed_status' => (int)$closed_status,'closed_time'=> $temp_time,'updated_time'=> $temp_time ,'ticket' => (int)$ticket_id, 'resolved_status' => (int)$resolved_status));
 

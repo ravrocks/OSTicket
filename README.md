@@ -37,7 +37,7 @@ from 'maxWidth': el.hasClass('fullscreen') ? '950px' : false, to 'maxWidth': el.
 
 * Edited class.ticket.php (function assign()) for making Auto-Change-Department work when assigning to agent of different department
 
-error_log(print_r("Performing Transfer of Department", TRUE));
+		error_log(print_r("Performing Transfer of Department", TRUE));
         if($assignee instanceof Staff && $this->getDeptId() !== $assignee->getDeptId())
             {   
                 error_log(print_r("Inside if statement", TRUE));
@@ -46,5 +46,42 @@ error_log(print_r("Performing Transfer of Department", TRUE));
                 $this->getThread()->addNote(array('note' => 'Ticket transferred as assigned staff in different department.'));                
                 $this->transfer($form,$errors,false);
             }
+* Edited tickets.php for updating resolution status by client/helpdesk user
+* Edited /osticket/include/client/view.inc.php for enabling user to Reopen/Close Ticket.
+* Edited scp/tickets.php for changing SLA based on Status change. [Add after Reply Successfully posted thing]
+
+				require(INCLUDE_DIR.'ost-config.php');
+                $type=DBTYPE;
+                $host=DBHOST;
+                $dname=DBNAME;
+                $user=DBUSER;
+                $pass=DBPASS;
+                //echo($type.':host='.$host.';dbname='.$dname);
+                $conOst = new PDO($type.':host='.$host.';dbname='.$dname,$user,$pass);
+                $ticket_status=$ticket->getStatusId();
+                $sla_query=null;
+                switch($ticket_status)
+                {
+                    case 10:
+                        if($ticket->getSLAId()!=4)
+                            $sla_query="UPDATE ost_ticket SET sla_id=4 WHERE ticket_id=:ticketid";
+                    break;
+                    case 6:
+                        if($ticket->getSLAId()!=5)
+                            $sla_query="UPDATE ost_ticket SET sla_id=5 WHERE ticket_id=:ticketid";
+                    break;
+                    case 9:
+                        if($ticket->getSLAId()!=6)
+                            $sla_query="UPDATE ost_ticket SET sla_id=6 WHERE ticket_id=:ticketid";
+                    break;
+                    default:
+                        $sla_query=null;
+                }
+                if($sla_query)
+                 {
+                    $stmtOst = $conOst->prepare($sla_query);
+                    $stmtOst->execute(array('ticketid' => (int)$ticket->getId()));
+                 }
+                 $conOst=null;            
 
 
