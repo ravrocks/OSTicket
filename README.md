@@ -15,8 +15,10 @@ Changes-
 UI Fixes-
 File is present in /osticket/include/client/view.inc.php
 Goto Line 196-198 for changing the text inside the buttons ====> "Post REPLY"    "Reset"     "CANCEL"
+
 =============================================================
 Open /include/client/open.inc.phpOn line 58 change "Help Topic" to whatever you want.
+
 =============================================================
 For editing the core source files focus on changing the page width etc.Make sure that you back up your site before you muck around. If you do it on the staff side it will affect all Agents. If you do it on the User side then it will affect all users.
 
