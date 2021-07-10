@@ -13,14 +13,12 @@ Changes-
 
 
 UI Fixes-
-File is present in /osticket/include/client/view.inc.php
+* File is present in /osticket/include/client/view.inc.php
 Goto Line 196-198 for changing the text inside the buttons ====> "Post REPLY"    "Reset"     "CANCEL"
 
-=============================================================
-Open /include/client/open.inc.phpOn line 58 change "Help Topic" to whatever you want.
+* Open /include/client/open.inc.phpOn line 58 change "Help Topic" to whatever you want.
 
-=============================================================
-For editing the core source files focus on changing the page width etc.Make sure that you back up your site before you muck around. If you do it on the staff side it will affect all Agents. If you do it on the User side then it will affect all users.
+* For editing the core source files focus on changing the page width etc.Make sure that you back up your site before you muck around. If you do it on the staff side it will affect all Agents. If you do it on the User side then it will affect all users.
 
 The User side is: /assets/default/css/theme.css
 
@@ -37,8 +35,7 @@ Line 616 modify 940 to 100%
 file is \js\redactor-osticket.js and you change line 378:
 from 'maxWidth': el.hasClass('fullscreen') ? '950px' : false, to 'maxWidth': el.hasClass('fullscreen') ? '100%' : false,
 
-==============================================================
-Edited class.ticket.php (function assign()) for making Auto-Change-Department work when assigning to agent of different department
+* Edited class.ticket.php (function assign()) for making Auto-Change-Department work when assigning to agent of different department
 
 error_log(print_r("Performing Transfer of Department", TRUE));
         if($assignee instanceof Staff && $this->getDeptId() !== $assignee->getDeptId())
@@ -50,5 +47,4 @@ error_log(print_r("Performing Transfer of Department", TRUE));
                 $this->transfer($form,$errors,false);
             }
 
-==============================================================
 
