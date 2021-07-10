@@ -1,0 +1,1 @@
+php C:/inetpub/wwwroot/osTicket/auto_assign_agent.php
