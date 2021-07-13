@@ -211,6 +211,76 @@ if($_POST && !$errors):
                     }
                 }
             }
+            ///////////////////////////////Restrict Backtrack of Ticket status change
+            ////////////////////////////////////////by comparing with desired status///////////////////////////////////
+            ///////////////////////////////////////////////////////////////////////////
+            require(INCLUDE_DIR.'ost-config.php');
+                $type=DBTYPE;
+                $host=DBHOST;
+                $dname=DBNAME;
+                $user=DBUSER;
+                $pass=DBPASS;
+            $conOst = new PDO($type.':host='.$host.';dbname='.$dname,$user,$pass);
+            $extract_status="SELECT status_id FROM ost_ticket WHERE ticket_id=".(int)$ticket->getId();
+            $extract_status = $conOst->prepare($extract_status);
+            $extract_status->execute();
+            $current_status=0;
+            if ($rss = $extract_status->fetch()) {
+                error_log(print_r("extracted status is- ".$rss['status_id'],TRUE));
+                $current_status=(int)$rss['status_id'];
+            }
+
+
+            $desired_status=$vars['reply_status_id'];
+            //error_log(print_r($vars,TRUE));
+            $ack_Status_id=10;$open_Status_id=1;$wip_Status_id=6;$res_Status_id=9;
+            switch($current_status)
+            {
+                case 1:
+                    error_log(print_r("The ticket is open curerntly.",TRUE));
+                break;
+                case 10:
+                    if(($desired_status==$open_Status_id))
+                            {
+                                $errors['err']=sprintf('%s %s',
+                    __('Unable to post the reply.'),
+                    __('Cannot change status to previous status.'));
+                                Draft::deleteForNamespace(
+                    'ticket.response.' . $ticket->getId(),
+                    $thisstaff->getId());
+                                $vars['reply_status_id']=$current_status;
+                            }
+                break;
+                case 6:
+                    if(($desired_status==$open_Status_id)||($desired_status==$ack_Status_id))
+                            {
+                                $errors['err']=sprintf('%s %s',
+                    __('Unable to post the reply.'),
+                    __('Cannot change status to previous status.'));
+                                Draft::deleteForNamespace(
+                    'ticket.response.' . $ticket->getId(),
+                    $thisstaff->getId());
+                                $vars['reply_status_id']=$current_status;
+                            }
+                break;
+                case 9:
+                    if(($desired_status!=$res_Status_id))
+                            {
+                                $errors['err']=sprintf('%s %s',
+                    __('Unable to post the reply.'),
+                    __('Cannot change status to previous status.'));
+                                Draft::deleteForNamespace(
+                    'ticket.response.' . $ticket->getId(),
+                    $thisstaff->getId());
+                                $vars['reply_status_id']=$current_status;
+                            }
+                break;
+                default:
+            }
+            //error_log(print_r($current_status,TRUE));    
+
+            /////////////////////////////////////////////////////////////
+
             if (!$errors && ($response=$ticket->postReply($vars, $errors,
                             $alert))) {
                 $msg = sprintf(__('%s: Reply posted successfully'),
@@ -220,12 +290,7 @@ if($_POST && !$errors):
                         );
 
                 ///////////////////////////Code for modifying SLA based on status change/////////////////////////////////////////////////
-                require(INCLUDE_DIR.'ost-config.php');
-                $type=DBTYPE;
-                $host=DBHOST;
-                $dname=DBNAME;
-                $user=DBUSER;
-                $pass=DBPASS;
+                
                 //echo($type.':host='.$host.';dbname='.$dname);
                 $conOst = new PDO($type.':host='.$host.';dbname='.$dname,$user,$pass);
                 $sla_query=null;
