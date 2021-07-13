@@ -2109,21 +2109,19 @@ implements RestrictedAccess, Threadable, Searchable {
             }
         }
 
-        /*error_log(print_r("Assignee Dept id-".$assignee->getDeptId(), TRUE));
+        error_log(print_r("Assignee Dept id-".$assignee->getDeptId(), TRUE));
         error_log(print_r("Current Dept id-".$this->getDeptId(), TRUE));
         //Change Department if the new assignee is of different Department
         if($this->getDeptId() != $assignee->getDeptId())
             {   
-                error_log(print_r("Performing Transfer of Department", TRUE));
-                $errorzz=null;
-                error_log(print_r($staff->getDeptId(),TRUE));   
-                //$form = new TransferForm();
-                //error_log(print_r("Form object".$form, TRUE));        
-                //$form->dept = $assignee->getDeptId();              
-                //$this->getThread()->addNote(array('note' => 'Ticket transferred as assigned staff in different department.'));
-                //$this->transfer($form,$errorzz,false);        
-                 $this->transfer($staff->getDeptId(), 'System: Assigned staff in different Department.', false);
-            }*/
+                error_log(print_r("Inside if statement", TRUE));
+                $form = new TransferForm();        
+                $form->_dept = $assignee->getDept();
+                //error_log(print_r($this->getDept(), TRUE));
+                //error_log(print_r($assignee->getDept(), TRUE));
+                $this->getThread()->addNote(array('note' => 'Ticket transferred as assigned staff in different department.'));   
+                $this->transfer($form,$errors,false);
+            }
 
         return true;
     }
@@ -2690,6 +2688,7 @@ implements RestrictedAccess, Threadable, Searchable {
                 && $dept->assignMembersOnly()
                 && !$dept->isMember($staff)
             ) {
+                error_log(print_r("im inside 2",TRUE));
                 $this->staff_id = 0;
             }
         }
@@ -2925,16 +2924,18 @@ implements RestrictedAccess, Threadable, Searchable {
         if ($refer && $form->refer())
             $this->getThread()->refer($refer);
 
-        error_log(print_r("Performing Transfer of Department", TRUE));
+        /*error_log(print_r("Performing Transfer of Department", TRUE));
         if($assignee instanceof Staff && $this->getDeptId() !== $assignee->getDeptId())
             {   
                 error_log(print_r("Inside if statement", TRUE));
                 $form = new TransferForm();        
-                $form->_dept = $assignee->getDept();
-                $this->getThread()->addNote(array('note' => 'Ticket transferred as assigned staff in different department.'));                
+                $form->_dept = $assignee->getDeptId();
+                //error_log(print_r($this->getDept(), TRUE));
+                //error_log(print_r($assignee->getDept(), TRUE));
+                $this->getThread()->addNote(array('note' => 'Ticket transferred as assigned staff in different department.'));   
                 $this->transfer($form,$errors,false);
             }
-
+        */
         return true;
     }
 

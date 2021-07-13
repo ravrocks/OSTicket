@@ -5600,11 +5600,11 @@ class AssignmentForm extends Form {
                     )
                 ),
             'comments' => new TextareaField(array(
-                    'id' => 3, 'label'=> '', 'required'=>false, 'default'=>'',
+                    'id' => 3, 'label'=> '', 'required'=>true, 'default'=>'',
                     'configuration' => array(
                         'html' => true,
                         'size' => 'small',
-                        'placeholder' => __('Optional reason for the assignment'),
+                        'placeholder' => __('Mandatory reason for the assignment'),
                         ),
                     )
                 ),
