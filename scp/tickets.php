@@ -237,7 +237,7 @@ if($_POST && !$errors):
             switch($current_status)
             {
                 case 1:
-                    error_log(print_r("The ticket is open curerntly.",TRUE));
+                    error_log(print_r("The ticket is open currently.",TRUE));
                 break;
                 case 10:
                     if(($desired_status==$open_Status_id))

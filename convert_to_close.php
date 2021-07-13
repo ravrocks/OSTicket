@@ -33,15 +33,15 @@
     		###########################################################
     		// Code for changing automatically changing status
             
-            $sqlOst = "UPDATE ost_ticket SET status_id=:closed_status,closed=:closed_time,updated=:updated_time,isoverdue=0 WHERE ticket_id=:ticket and status_id=:resolved_status";
+            $sqlOst = "UPDATE ost_ticket SET status_id=:closed_status,reopened=:reopen_time,closed=:closed_time,lastupdate=:lastupd_time WHERE ticket_id=:ticket and status_id=:resolved_status";
       		$stmtOst = $conOst->prepare($sqlOst);
-      		$stmtOst->execute(array('closed_status' => (int)$closed_status,'closed_time'=> $temp_time,'updated_time'=> $temp_time ,'ticket' => (int)$ticket_id, 'resolved_status' => (int)$resolved_status));
+      		$stmtOst->execute(array('closed_status' => (int)$closed_status,'reopen_time'=>null,'closed_time'=> $temp_time,'lastupd_time'=> $temp_time ,'ticket' => (int)$ticket_id, 'resolved_status' => (int)$resolved_status));
 
       		############################################################
     		#########################update thread_event table###################################################
     					$temp_eventid=2; //for closure of tickets
                         $temp_stat=$ticket->getStatus();
-                        $temp_id=$ticket->getId();
+                        $temp_id=$ticket->getThreadId();
                         $temp_Staffid=$ticket->getStaffId();
                         $temp_teamid=$ticket->getTeamId();
                         $temp_deptid=$ticket->getDeptId();
@@ -52,13 +52,13 @@
                         ////////////////////////
                         $temp_data='{"status":'.$closed_status.'}';
                         $temp_ttype='T';
-                        $temp_uid_type='M';
+                        $temp_uid_type='S';
 
                         $insert_thread="INSERT INTO ost_thread_event(thread_id,thread_type,event_id,staff_id,team_id,dept_id,topic_id,data,username,uid,uid_type,timestamp) VALUES (:thread_id,:thread_type,:event_id,:staff_id,:team_id,:dept_id,:topic_id,:data,:username,:uid,:uid_type,:timestamp_now)";
                         $insertOst = $conOst->prepare($insert_thread);
                         $insertOst->execute(array('thread_id' => (int)$temp_id,'thread_type' => $temp_ttype,'event_id' => (int)$temp_eventid,'staff_id' => $temp_Staffid,'team_id' => (int)$temp_teamid,'dept_id' => (int)$temp_deptid,'topic_id' => (int)$temp_topicid,'data' => $temp_data,'username' => $temp_owner,'uid' => (int)$temp_ownid,'uid_type'=> $temp_uid_type,'timestamp_now' => $temp_time));
 
-                        ###################################################################################
+            ###################################################################################
       		
       		$testvar=($ticket->getDeptId());
       		echo json_encode(array("imp"=>$testvar));

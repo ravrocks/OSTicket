@@ -83,7 +83,8 @@ if ($_POST && is_object($ticket) && $ticket->getId()) {
 
         if(!$errors) {
             //Everything checked out...do the magic.
-
+            //error_log(print_r("The staff id before posting is-".$ticket->getStaffId(),TRUE));
+            $old_assignee=(int)$ticket->getStaffId();
             $vars = array(
                     'userId' => $thisclient->getId(),
                     'poster' => (string) $thisclient->getName(),
@@ -92,6 +93,9 @@ if ($_POST && is_object($ticket) && $ticket->getId()) {
             $vars['files'] = $attachments->getFiles();
             if (isset($_POST['draft_id']))
                 $vars['draft_id'] = $_POST['draft_id'];
+
+            //error_log(print_r($vars,TRUE));
+            
 
             if(($msgid=$ticket->postMessage($vars, 'Web'))) {
                 $msg=__('Message Posted Successfully');
@@ -140,6 +144,22 @@ if ($_POST && is_object($ticket) && $ticket->getId()) {
                         $insertOst = $conOstt->prepare($insert_thread);
                         $insertOst->execute(array('thread_id' => (int)$temp_id,'thread_type' => $temp_ttype,'event_id' => (int)$reopen_status,'staff_id' => $temp_Staffid,'team_id' => (int)$temp_teamid,'dept_id' => (int)$temp_deptid,'topic_id' => (int)$temp_topicid,'data' => $temp_data,'username' => $temp_owner,'uid' => (int)$temp_ownid,'uid_type'=> $temp_uid_type,'timestamp_now' => $temp_time));
 
+                        $conOstt=null;
+
+                    }
+                    else if(($ticket->getStatus()=="Open")&&($ticket->getStaffId()==0))
+                    {
+                        require(INCLUDE_DIR.'ost-config.php');
+                        $type=DBTYPE;
+                        $host=DBHOST;
+                        $dname=DBNAME;
+                        $user=DBUSER;
+                        $pass=DBPASS;
+                        //echo($type.':host='.$host.';dbname='.$dname);
+                        $conOstt = new PDO($type.':host='.$host.';dbname='.$dname,$user,$pass);
+                        $sqlOst = "UPDATE ost_ticket SET staff_id=:staff_assigned WHERE ticket_id=:ticket";
+                        $stmtOst = $conOstt->prepare($sqlOst);
+                        $stmtOst->execute(array('staff_assigned' => (int)$old_assignee,'ticket' => (int)$ticket->getId()));
                         $conOstt=null;
 
                     }
