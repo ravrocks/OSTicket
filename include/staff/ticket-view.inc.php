@@ -107,7 +107,7 @@ if($ticket->isOverdue())
             <?php
             // Transfer
             if ($role->hasPerm(Ticket::PERM_TRANSFER)) {?>
-            <a class="action-button pull-right ticket-action" id="ticket-transfer" data-placement="bottom" data-toggle="tooltip" title="<?php echo __('Transfer'); ?>"
+            <a class="action-button pull-right ticket-action" id="ticket-transfer" style="visibility: hidden;display: none;" data-placement="bottom" data-toggle="tooltip" title="<?php echo __('Transfer'); ?>"
                 data-redirect="tickets.php"
                 href="#tickets/<?php echo $ticket->getId(); ?>/transfer"><i class="icon-share"></i></a>
             <?php

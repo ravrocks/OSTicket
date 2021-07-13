@@ -226,7 +226,7 @@ if($_POST && !$errors):
             $extract_status->execute();
             $current_status=0;
             if ($rss = $extract_status->fetch()) {
-                error_log(print_r("extracted status is- ".$rss['status_id'],TRUE));
+                //error_log(print_r("extracted status is- ".$rss['status_id'],TRUE));
                 $current_status=(int)$rss['status_id'];
             }
 
@@ -282,12 +282,11 @@ if($_POST && !$errors):
             /////////////////////////////////////////////////////////////
 
             if (!$errors && ($response=$ticket->postReply($vars, $errors,
-                            $alert))) {
+                            $alert))) 
+            {
                 $msg = sprintf(__('%s: Reply posted successfully'),
-                        sprintf(__('Ticket #%s'),
-                            sprintf('<a href="tickets.php?id=%d"><b>%s</b></a>',
-                                $ticket->getId(), $ticket->getNumber()))
-                        );
+                        sprintf(__('Ticket #%s'),sprintf('<a href="tickets.php?id=%d"><b>%s</b></a>',
+                                $ticket->getId(), $ticket->getNumber())));
 
                 ///////////////////////////Code for modifying SLA based on status change/////////////////////////////////////////////////
                 
@@ -301,8 +300,16 @@ if($_POST && !$errors):
                             $sla_query="UPDATE ost_ticket SET sla_id=4 WHERE ticket_id=:ticketid";
                     break;
                     case 6:
-                        if($ticket->getSLAId()!=5)
-                            $sla_query="UPDATE ost_ticket SET sla_id=5 WHERE ticket_id=:ticketid";
+                    $priority_for_ticket=$ticket->getPriorityId();
+                        if($priority_for_ticket==3)
+                            { if($ticket->getSLAId()!=7)
+                                    $sla_query="UPDATE ost_ticket SET sla_id=7 WHERE ticket_id=:ticketid";}
+                        else if($priority_for_ticket==2)
+                            { if($ticket->getSLAId()!=8)
+                                    $sla_query="UPDATE ost_ticket SET sla_id=8 WHERE ticket_id=:ticketid";}
+                        else
+                            { if($ticket->getSLAId()!=9)
+                                    $sla_query="UPDATE ost_ticket SET sla_id=9 WHERE ticket_id=:ticketid";}
                     break;
                     case 9:
                         if($ticket->getSLAId()!=6)

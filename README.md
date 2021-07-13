@@ -84,4 +84,4 @@ from 'maxWidth': el.hasClass('fullscreen') ? '950px' : false, to 'maxWidth': el.
                  }
                  $conOst=null;            
 
-
+* Edited /include/staff/ticket-view.inc.php for Removing Transfer Icon altogether [Line 109]

@@ -105,7 +105,6 @@ if ($_POST && is_object($ticket) && $ticket->getId()) {
                         $reopen_status=3; //actually reopened Event
                         $open_status=1;
                         $resolved_status=9;
-                        require('client.inc.php');
                         require(INCLUDE_DIR.'ost-config.php');
                         $type=DBTYPE;
                         $host=DBHOST;
