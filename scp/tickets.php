@@ -312,8 +312,8 @@ if($_POST && !$errors):
                                     $sla_query="UPDATE ost_ticket SET sla_id=9 WHERE ticket_id=:ticketid";}
                     break;
                     case 9:
-                        if($ticket->getSLAId()!=6)
-                            $sla_query="UPDATE ost_ticket SET sla_id=6 WHERE ticket_id=:ticketid";
+                        if($ticket->getSLAId()!=0)
+                            $sla_query="UPDATE ost_ticket SET sla_id=0 WHERE ticket_id=:ticketid";
                     break;
                     default:
                         $sla_query=null;
