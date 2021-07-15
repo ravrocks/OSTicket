@@ -508,6 +508,22 @@ if($ticket->isOverdue())
                     ?>
                  </td>
                 </tr>
+                <tr>
+                    <th><?php echo __('Project Name');?>:</th>
+                    <td><?php  
+                        require(INCLUDE_DIR.'ost-config.php');
+                        $type=DBTYPE;$host=DBHOST;$dname=DBNAME;$user=DBUSER;$pass=DBPASS;
+                        $conOst_temp = new PDO($type.':host='.$host.';dbname='.$dname,$user,$pass);
+                        $extract_project="SELECT projectlinked FROM ost_user__cdata WHERE user_id=".(int)$ticket->getUserId();
+                        $extract_project = $conOst_temp->prepare($extract_project);
+                        $extract_project->execute();
+                        if($rss = $extract_project->fetch())
+                        {
+                            echo $rss['projectlinked'];
+                        }
+                        $conOst_temp=null;
+                    ?></td>
+                </tr>
             </table>
         </td>
     </tr>

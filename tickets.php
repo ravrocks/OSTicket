@@ -118,9 +118,9 @@ if ($_POST && is_object($ticket) && $ticket->getId()) {
                         //echo($type.':host='.$host.';dbname='.$dname);
                         $conOstt = new PDO($type.':host='.$host.';dbname='.$dname,$user,$pass);
                         //##########################updating status############################################################
-                        $sqlOst = "UPDATE ost_ticket SET status_id=:open_status WHERE ticket_id=:ticket and status_id=:resolved_status";
+                        $sqlOst = "UPDATE ost_ticket SET status_id=:open_status,sla_id=:open_sla_id WHERE ticket_id=:ticket and status_id=:resolved_status";
                         $stmtOst = $conOstt->prepare($sqlOst);
-                        $stmtOst->execute(array('open_status' => (int)$open_status,'ticket' => (int)$ticket->getId(), 'resolved_status' => (int)$resolved_status));
+                        $stmtOst->execute(array('open_status' => (int)$open_status,'open_sla_id' => 3,'ticket' => (int)$ticket->getId(), 'resolved_status' => (int)$resolved_status));
                         //#########################update thread_event table###################################################
                         $temp_stat=$ticket->getStatus();
                         $temp_id=$ticket->getId();
@@ -157,9 +157,9 @@ if ($_POST && is_object($ticket) && $ticket->getId()) {
                         $pass=DBPASS;
                         //echo($type.':host='.$host.';dbname='.$dname);
                         $conOstt = new PDO($type.':host='.$host.';dbname='.$dname,$user,$pass);
-                        $sqlOst = "UPDATE ost_ticket SET staff_id=:staff_assigned WHERE ticket_id=:ticket";
+                        $sqlOst = "UPDATE ost_ticket SET staff_id=:staff_assigned,sla_id=:open_sla_id WHERE ticket_id=:ticket";
                         $stmtOst = $conOstt->prepare($sqlOst);
-                        $stmtOst->execute(array('staff_assigned' => (int)$old_assignee,'ticket' => (int)$ticket->getId()));
+                        $stmtOst->execute(array('staff_assigned' => (int)$old_assignee,'open_sla_id' => 3,'ticket' => (int)$ticket->getId()));
                         $conOstt=null;
 
                     }

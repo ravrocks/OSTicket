@@ -296,11 +296,7 @@ if($_POST && !$errors):
                 switch((int)$ticket->getStatusId())
                 {
                     case 10:
-                        if($ticket->getSLAId()!=4)
-                            $sla_query="UPDATE ost_ticket SET sla_id=4 WHERE ticket_id=:ticketid";
-                    break;
-                    case 6:
-                    $priority_for_ticket=$ticket->getPriorityId();
+                        $priority_for_ticket=$ticket->getPriorityId();
                         if($priority_for_ticket==3)
                             { if($ticket->getSLAId()!=7)
                                     $sla_query="UPDATE ost_ticket SET sla_id=7 WHERE ticket_id=:ticketid";}
@@ -310,6 +306,23 @@ if($_POST && !$errors):
                         else
                             { if($ticket->getSLAId()!=9)
                                     $sla_query="UPDATE ost_ticket SET sla_id=9 WHERE ticket_id=:ticketid";}
+                    break;
+                    case 6:
+                        if(($ticket->getSLAId()!=7)||($ticket->getSLAId()!=8)||($ticket->getSLAId()!=9))
+                           {
+                            $priority_for_ticket=$ticket->getPriorityId();
+                        if($priority_for_ticket==3)
+                            { if($ticket->getSLAId()!=7)
+                                    $sla_query="UPDATE ost_ticket SET sla_id=7 WHERE ticket_id=:ticketid";}
+                        else if($priority_for_ticket==2)
+                            { if($ticket->getSLAId()!=8)
+                                    $sla_query="UPDATE ost_ticket SET sla_id=8 WHERE ticket_id=:ticketid";}
+                        else
+                            { if($ticket->getSLAId()!=9)
+                                    $sla_query="UPDATE ost_ticket SET sla_id=9 WHERE ticket_id=:ticketid";}
+                           }
+                        else
+                            $sla_query=null;
                     break;
                     case 9:
                         if($ticket->getSLAId()!=0)

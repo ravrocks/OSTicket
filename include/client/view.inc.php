@@ -78,6 +78,22 @@ if ($thisclient && $thisclient->isGuest()
                     <th><?php echo __('Create Date');?>:</th>
                     <td><?php echo Format::datetime($ticket->getCreateDate()); ?></td>
                 </tr>
+                <tr>
+                    <th><?php echo __('Project Name');?>:</th>
+                    <td><?php  
+                        require(INCLUDE_DIR.'ost-config.php');
+                        $type=DBTYPE;$host=DBHOST;$dname=DBNAME;$user=DBUSER;$pass=DBPASS;
+                        $conOst = new PDO($type.':host='.$host.';dbname='.$dname,$user,$pass);
+                        $extract_project="SELECT projectlinked FROM ost_user__cdata WHERE user_id=".(int)$ticket->getUserId();
+                        $extract_project = $conOst->prepare($extract_project);
+                        $extract_project->execute();
+                        if($rss = $extract_project->fetch())
+                        {
+                            echo $rss['projectlinked'];
+                        }
+                        $conOst=null;
+                    ?></td>
+                </tr>
            </table>
        </td>
        <td width="50%">
