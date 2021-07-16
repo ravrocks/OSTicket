@@ -62,6 +62,9 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
         <td colspan="2">
             <select id="topicId" name="topicId" onchange="javascript:
                     var data = $(':input[name]', '#dynamic-form').serialize();
+                    var seldata=this.options[this.selectedIndex].text;
+                    
+
                     $.ajax(
                       'ajax.php/form/help-topic/' + this.value,
                       {
@@ -69,15 +72,43 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                         dataType: 'json',
                         success: function(json) {
                           $('#dynamic-form').empty().append(json.html);
+                          console.log($('#dynamic-form'));
                           $(document.head).append(json.media);
                         }
-                      });">
-                <option value="" selected="selected">&mdash; <?php echo __('Select a Help Topic');?> &mdash;</option>
+                      });
+
+                    $.ajax({
+                    type: 'POST',
+                    url: 'fetch_subdomain.php',
+                    dataType:'html',
+                    data: { 'help-topic':seldata},
+                        success: function(response){
+                        var t = document.getElementById('dynamic-form');
+                        var d = t.getElementsByTagName('tr')[1];
+                        var r = d.getElementsByTagName('td')[0];
+                        var z = r.getElementsByTagName('select');
+                        if(!z)
+                        {
+                            alert('Error Encountered');
+                            window.location(true);
+                        }
+                        //console.log(z[0].id);
+                        r.getElementsByTagName('select')[0].innerHTML='';
+                        r.getElementsByTagName('select')[0].innerHTML=response;
+                        },
+                        error: function(XMLHttpRequest, textStatus, errorThrown) { 
+                        alert('Error Encountered');
+                        window.location(true);
+                        }
+                    });
+                    
+                ">
+                <option value="" selected="selected">&mdash; <?php echo __('Select an Issue');?> &mdash;</option>
                 <?php
                 if($topics=Topic::getPublicHelpTopics()) {
                     foreach($topics as $id =>$name) {
                         echo sprintf('<option value="%d" %s>%s</option>',
-                                $id, ($info['topicId']==$id)?'selected="selected"':'', $name);
+                                $id, ($info['topicId']==$id)?'selected="selected"':'', $name);                      
                     }
                 } ?>
             </select>

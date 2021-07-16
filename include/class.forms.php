@@ -376,7 +376,6 @@ class CustomForm extends SimpleForm {
         foreach (parent::getFields() as $field) {
             if ($isedit && !$field->isEditable($user))
                 continue;
-
             $fields[] = $field;
         }
 
@@ -460,7 +459,8 @@ implements FormRenderer {
           $cols -= $size;
           $attrs = array('colspan' => $size, 'rowspan' => $layout->getHeight(),
               'style' => '"'.$layout->getOption('style').'"');
-          if ($offs) { ?>
+          if ($offs) { 
+            ?>
               <td colspan="<?php echo $offs; ?>"></td> <?php
           }
           ?>

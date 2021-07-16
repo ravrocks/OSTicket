@@ -5,8 +5,6 @@
 		$resolved_status=9;
 		$ticket=null;
 
-		$conOst = new PDO('mysql:host=localhost;dbname=osTicket', 'root', 'ravrocks$321');
-		
         if(isset($_POST['ticketid']) && !empty($_POST['ticketid'])) {
         	$ticket_id=$_POST['ticketid'];
         	$variable="Success!";
@@ -14,6 +12,10 @@
             require('secure.inc.php');
             require_once(INCLUDE_DIR.'class.ticket.php');
 			require_once(INCLUDE_DIR.'class.json.php');
+            require(INCLUDE_DIR.'ost-config.php');
+            $type=DBTYPE;$host=DBHOST;$dname=DBNAME;$user=DBUSER;$pass=DBPASS;
+             //echo($type.':host='.$host.';dbname='.$dname);
+            $conOst = new PDO($type.':host='.$host.';dbname='.$dname,$user,$pass);
         	
         	if($_POST['ticketid']) {
     			if (!($ticket = Ticket::lookup($_POST['ticketid']))) {

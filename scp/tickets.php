@@ -215,11 +215,7 @@ if($_POST && !$errors):
             ////////////////////////////////////////by comparing with desired status///////////////////////////////////
             ///////////////////////////////////////////////////////////////////////////
             require(INCLUDE_DIR.'ost-config.php');
-                $type=DBTYPE;
-                $host=DBHOST;
-                $dname=DBNAME;
-                $user=DBUSER;
-                $pass=DBPASS;
+            $type=DBTYPE;$host=DBHOST;$dname=DBNAME;$user=DBUSER;$pass=DBPASS;
             $conOst = new PDO($type.':host='.$host.';dbname='.$dname,$user,$pass);
             $extract_status="SELECT status_id FROM ost_ticket WHERE ticket_id=".(int)$ticket->getId();
             $extract_status = $conOst->prepare($extract_status);
@@ -232,14 +228,14 @@ if($_POST && !$errors):
 
 
             $desired_status=$vars['reply_status_id'];
-            //error_log(print_r($vars,TRUE));
             $ack_Status_id=10;$open_Status_id=1;$wip_Status_id=6;$res_Status_id=9;
             switch($current_status)
             {
-                case 1:
-                    error_log(print_r("The ticket is open currently.",TRUE));
+                case $open_Status_id:
+                    $vars['reply_status_id']=$ack_Status_id;
+                    error_log(print_r("Automatic Change to ACK",TRUE));
                 break;
-                case 10:
+                case $ack_Status_id:
                     if(($desired_status==$open_Status_id))
                             {
                                 $errors['err']=sprintf('%s %s',
@@ -251,7 +247,7 @@ if($_POST && !$errors):
                                 $vars['reply_status_id']=$current_status;
                             }
                 break;
-                case 6:
+                case $wip_Status_id:
                     if(($desired_status==$open_Status_id)||($desired_status==$ack_Status_id))
                             {
                                 $errors['err']=sprintf('%s %s',
@@ -263,7 +259,7 @@ if($_POST && !$errors):
                                 $vars['reply_status_id']=$current_status;
                             }
                 break;
-                case 9:
+                case $res_Status_id:
                     if(($desired_status!=$res_Status_id))
                             {
                                 $errors['err']=sprintf('%s %s',
