@@ -55,6 +55,42 @@ where list_id is
                while($row = $stmtz->fetch())
                   echo '<option value="'.$row['id'].'">'.$row['value'].'</option>';
             }
+            else if($tname=="Network Issue")
+            {
+               $sql_f_subd = "SELECT * FROM ost_list_items WHERE list_id=16";
+               $stmtz = $conOst->prepare($sql_f_subd);
+               $stmtz->execute();
+               echo '<option value="0">Select Subdomain</option>'; 
+               while($row = $stmtz->fetch())
+                  echo '<option value="'.$row['id'].'">'.$row['value'].'</option>';
+            }
+            else if($tname=="Server/Storage Issue")
+            {
+               $sql_f_subd = "SELECT * FROM ost_list_items WHERE list_id=17";
+               $stmtz = $conOst->prepare($sql_f_subd);
+               $stmtz->execute();
+               echo '<option value="0">Select Subdomain</option>'; 
+               while($row = $stmtz->fetch())
+                  echo '<option value="'.$row['id'].'">'.$row['value'].'</option>';
+            }
+            else if($tname=="Database Issue")
+            {
+               $sql_f_subd = "SELECT * FROM ost_list_items WHERE list_id=18";
+               $stmtz = $conOst->prepare($sql_f_subd);
+               $stmtz->execute();
+               echo '<option value="0">Select Subdomain</option>'; 
+               while($row = $stmtz->fetch())
+                  echo '<option value="'.$row['id'].'">'.$row['value'].'</option>';
+            }
+            else if($tname=="CCC Application Issue")
+            {
+               $sql_f_subd = "SELECT * FROM ost_list_items WHERE list_id=19";
+               $stmtz = $conOst->prepare($sql_f_subd);
+               $stmtz->execute();
+               echo '<option value="0">Select Subdomain</option>'; 
+               while($row = $stmtz->fetch())
+                  echo '<option value="'.$row['id'].'">'.$row['value'].'</option>';
+            }
             else
             {
                $sql_f_subd = "SELECT * FROM ost_list_items WHERE list_id=16";
@@ -64,6 +100,7 @@ where list_id is
                while($row = $stmtz->fetch())
                   echo '<option value="'.$row['id'].'">'.$row['value'].'</option>';
             }
+            $conOst=null;
       }
       $conOst=null;
 

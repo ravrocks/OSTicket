@@ -63,8 +63,6 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
             <select id="topicId" name="topicId" onchange="javascript:
                     var data = $(':input[name]', '#dynamic-form').serialize();
                     var seldata=this.options[this.selectedIndex].text;
-                    
-
                     $.ajax(
                       'ajax.php/form/help-topic/' + this.value,
                       {
@@ -72,36 +70,10 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                         dataType: 'json',
                         success: function(json) {
                           $('#dynamic-form').empty().append(json.html);
-                          console.log($('#dynamic-form'));
                           $(document.head).append(json.media);
+                          loadOthers();
                         }
-                      });
-
-                    $.ajax({
-                    type: 'POST',
-                    url: 'fetch_subdomain.php',
-                    dataType:'html',
-                    data: { 'help-topic':seldata},
-                        success: function(response){
-                        var t = document.getElementById('dynamic-form');
-                        var d = t.getElementsByTagName('tr')[1];
-                        var r = d.getElementsByTagName('td')[0];
-                        var z = r.getElementsByTagName('select');
-                        if(!z)
-                        {
-                            alert('Error Encountered');
-                            window.location(true);
-                        }
-                        //console.log(z[0].id);
-                        r.getElementsByTagName('select')[0].innerHTML='';
-                        r.getElementsByTagName('select')[0].innerHTML=response;
-                        },
-                        error: function(XMLHttpRequest, textStatus, errorThrown) { 
-                        alert('Error Encountered');
-                        window.location(true);
-                        }
-                    });
-                    
+                      });                   
                 ">
                 <option value="" selected="selected">&mdash; <?php echo __('Select an Issue');?> &mdash;</option>
                 <?php
@@ -157,3 +129,33 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
             window.location.href='index.php';">
   </p>
 </form>
+<script type="text/javascript">
+    function loadOthers(){
+        var e = document.getElementById("topicId");
+        var seldata = e.options[e.selectedIndex].text;
+        //console.log(seldata);
+
+        var tbl = document.getElementById('dynamic-form');
+        if (tbl.rows.length == 0) {
+            console.log("empty table");
+        }
+        else
+        {
+        $.ajax({
+                    type: 'POST',
+                    url: 'fetch_subdomain.php',
+                    dataType:'html',
+                    data: { 'help-topic':seldata},
+                        success: function(response){
+                        var t = document.getElementById('dynamic-form');
+                        t.rows.item(1).cells[0].getElementsByTagName('select')[0].innerHTML="";
+                        t.rows.item(1).cells[0].getElementsByTagName('select')[0].innerHTML=response;
+                        },
+                        error: function(XMLHttpRequest, textStatus, errorThrown) { 
+                        alert('Error Encountered');
+                        window.location(true);
+                        }
+                });
+        }
+    }
+</script>
