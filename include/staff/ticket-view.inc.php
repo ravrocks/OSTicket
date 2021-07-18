@@ -1117,9 +1117,12 @@ if ($errors['err'] && isset($_POST['a'])) {
                     if ($role->hasPerm(Ticket::PERM_CLOSE) && !$outstanding)
                         $states = array_merge($states, array('closed'));
 
-                    foreach (TicketStatusList::getStatuses(
-                                array('states' => $states)) as $s) {
-                        if (!$s->isEnabled()) continue;
+                    foreach (TicketStatusList::getStatuses(array('states' => $states)) as $s)
+                    {
+                        if($s->getName()=="Open")
+                            continue;
+                        if (!$s->isEnabled()) 
+                            continue;
                         $selected = ($statusId == $s->getId());
                         echo sprintf('<option value="%d" %s>%s%s</option>',
                                 $s->getId(),

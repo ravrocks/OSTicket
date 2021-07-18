@@ -1367,6 +1367,7 @@ $(document).on('click.inline-edit', 'a.inline-edit', function(e) {
                 var note = $('select[name=note_status_id]');
                 // Foreach status see if exists, if not appned to options
                 $.each(obj.statuses, function(key, value) {
+                    console.log(reply);
                     var option = $('<option></option>').attr('value', key).text(value);
                     if (reply)
                         if (reply.find('option[value='+key+']').length == 0)

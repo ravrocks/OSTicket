@@ -286,24 +286,11 @@ if($_POST && !$errors):
 
                 ///////////////////////////Code for modifying SLA based on status change/////////////////////////////////////////////////
                 
-                //echo($type.':host='.$host.';dbname='.$dname);
                 $conOst = new PDO($type.':host='.$host.';dbname='.$dname,$user,$pass);
                 $sla_query=null;
                 switch((int)$ticket->getStatusId())
                 {
                     case 10:
-                        $priority_for_ticket=$ticket->getPriorityId();
-                        if($priority_for_ticket==3)
-                            { if($ticket->getSLAId()!=7)
-                                    $sla_query="UPDATE ost_ticket SET sla_id=7 WHERE ticket_id=:ticketid";}
-                        else if($priority_for_ticket==2)
-                            { if($ticket->getSLAId()!=8)
-                                    $sla_query="UPDATE ost_ticket SET sla_id=8 WHERE ticket_id=:ticketid";}
-                        else
-                            { if($ticket->getSLAId()!=9)
-                                    $sla_query="UPDATE ost_ticket SET sla_id=9 WHERE ticket_id=:ticketid";}
-                    break;
-                    case 6:
                         if(($ticket->getSLAId()!=7)||($ticket->getSLAId()!=8)||($ticket->getSLAId()!=9))
                            {
                             $priority_for_ticket=$ticket->getPriorityId();
@@ -320,12 +307,29 @@ if($_POST && !$errors):
                         else
                             $sla_query=null;
                     break;
-                    case 9:
-                        if($ticket->getSLAId()!=0)
-                            $sla_query="UPDATE ost_ticket SET sla_id=0 WHERE ticket_id=:ticketid";
+                    case 6:
+                        if(($ticket->getSLAId()!=13)||($ticket->getSLAId()!=14)||($ticket->getSLAId()!=15))
+                           {
+                            $priority_for_ticket=$ticket->getPriorityId();
+                        if($priority_for_ticket==3)
+                            { if($ticket->getSLAId()!=15)
+                                    $sla_query="UPDATE ost_ticket SET sla_id=15 WHERE ticket_id=:ticketid";}
+                        else if($priority_for_ticket==2)
+                            { if($ticket->getSLAId()!=14)
+                                    $sla_query="UPDATE ost_ticket SET sla_id=14 WHERE ticket_id=:ticketid";}
+                        else
+                            { if($ticket->getSLAId()!=13)
+                                    $sla_query="UPDATE ost_ticket SET sla_id=13 WHERE ticket_id=:ticketid";}
+                           }
+                        else
+                            $sla_query=null;
                     break;
+                    case 9:
+                        $sla_query="UPDATE ost_ticket SET sla_id=0 WHERE ticket_id=:ticketid";
                     default:
                         $sla_query=null;
+                   
+                        
                 }
                 if($sla_query)
                  {

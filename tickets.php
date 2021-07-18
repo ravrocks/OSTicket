@@ -109,18 +109,26 @@ if ($_POST && is_object($ticket) && $ticket->getId()) {
                         $reopen_status=3; //actually reopened Event
                         $open_status=1;
                         $resolved_status=9;
+                        $reopen_sla=2;
+                        switch((int)$ticket->getPriorityId())
+                        {
+                            case 3:  $reopen_sla=12;
+                            break;
+                            case 2:  $reopen_sla=11;
+                            break;
+                            case 1:  $reopen_sla=10;
+                            break;
+                            default:  $reopen_sla=11;
+                        }
+                        
                         require(INCLUDE_DIR.'ost-config.php');
-                        $type=DBTYPE;
-                        $host=DBHOST;
-                        $dname=DBNAME;
-                        $user=DBUSER;
-                        $pass=DBPASS;
+                        $type=DBTYPE; $host=DBHOST; $dname=DBNAME; $user=DBUSER; $pass=DBPASS;
                         //echo($type.':host='.$host.';dbname='.$dname);
                         $conOstt = new PDO($type.':host='.$host.';dbname='.$dname,$user,$pass);
                         //##########################updating status############################################################
                         $sqlOst = "UPDATE ost_ticket SET status_id=:open_status,sla_id=:open_sla_id WHERE ticket_id=:ticket and status_id=:resolved_status";
                         $stmtOst = $conOstt->prepare($sqlOst);
-                        $stmtOst->execute(array('open_status' => (int)$open_status,'open_sla_id' => 3,'ticket' => (int)$ticket->getId(), 'resolved_status' => (int)$resolved_status));
+                        $stmtOst->execute(array('open_status' => (int)$open_status,'open_sla_id' => $reopen_sla,'ticket' => (int)$ticket->getId(), 'resolved_status' => (int)$resolved_status));
                         //#########################update thread_event table###################################################
                         $temp_stat=$ticket->getStatus();
                         $temp_id=$ticket->getId();
@@ -149,6 +157,17 @@ if ($_POST && is_object($ticket) && $ticket->getId()) {
                     }
                     else if(($ticket->getStatus()=="Open")&&($ticket->getStaffId()==0))
                     {
+                        $reopen_sla=2;
+                        switch((int)$ticket->getPriorityId())
+                        {
+                            case 3:  $reopen_sla=12;
+                            break;
+                            case 2:  $reopen_sla=11;
+                            break;
+                            case 1:  $reopen_sla=10;
+                            break;
+                            default:  $reopen_sla=11;
+                        }
                         require(INCLUDE_DIR.'ost-config.php');
                         $type=DBTYPE;
                         $host=DBHOST;
@@ -159,7 +178,7 @@ if ($_POST && is_object($ticket) && $ticket->getId()) {
                         $conOstt = new PDO($type.':host='.$host.';dbname='.$dname,$user,$pass);
                         $sqlOst = "UPDATE ost_ticket SET staff_id=:staff_assigned,sla_id=:open_sla_id WHERE ticket_id=:ticket";
                         $stmtOst = $conOstt->prepare($sqlOst);
-                        $stmtOst->execute(array('staff_assigned' => (int)$old_assignee,'open_sla_id' => 3,'ticket' => (int)$ticket->getId()));
+                        $stmtOst->execute(array('staff_assigned' => (int)$old_assignee,'open_sla_id' => $reopen_sla,'ticket' => (int)$ticket->getId()));
                         $conOstt=null;
 
                     }

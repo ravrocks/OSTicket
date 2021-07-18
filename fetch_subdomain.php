@@ -100,7 +100,6 @@ where list_id is
                while($row = $stmtz->fetch())
                   echo '<option value="'.$row['id'].'">'.$row['value'].'</option>';
             }
-            $conOst=null;
       }
       $conOst=null;
 

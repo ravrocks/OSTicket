@@ -133,7 +133,7 @@ $tickets->order_by($order.$order_by);
 $tickets->values(
     'ticket_id', 'number', 'created', 'isanswered', 'source', 'status_id',
     'status__state', 'status__name', 'cdata__subject', 'dept_id',
-    'dept__name', 'dept__ispublic', 'user__default_email__address', 'user_id'
+    'dept__name', 'dept__ispublic', 'user__default_email__address', 'user_id','sla_id'
 );
 
 ?>
@@ -200,7 +200,7 @@ if ($closedTickets) {?>
     </small>
 </div>
 </h1>
-<table id="ticketTable" width="800" border="0" cellspacing="0" cellpadding="0">
+<table id="ticketTable" width="900" border="0" cellspacing="0" cellpadding="0">
     <caption><?php echo $showing; ?></caption>
     <thead>
         <tr>
@@ -212,6 +212,9 @@ if ($closedTickets) {?>
             </th>
             <th width="100">
                 <a href="tickets.php?sort=status&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By Status"><?php echo __('Status');?>&nbsp;<i class="icon-sort"></i></a>
+            </th>
+            <th width="160">
+                <a href="tickets.php?sort=status&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By Status"><?php echo __('Priority');?>&nbsp;<i class="icon-sort"></i></a>
             </th>
             <th width="320">
                 <a href="tickets.php?sort=subject&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By Subject"><?php echo __('Subject');?>&nbsp;<i class="icon-sort"></i></a>
@@ -251,6 +254,34 @@ if ($closedTickets) {?>
                 </td>
                 <td><?php echo Format::date($T['created']); ?></td>
                 <td><?php echo $status; ?></td>
+                <td><?php 
+                    $sla_id=$T['sla_id'];
+                    switch($sla_id)
+                    {
+                        case 7: echo("Severity 1 (Critical)");
+                        break;
+                        case 8: echo("Severity 2 (Major)");
+                        break;
+                        case 9: echo("Severity 3 (Minor)");
+                        break;
+                        case 10: echo("Severity 3 (Minor)");
+                        break;
+                        case 11: echo("Severity 2 (Major)");
+                        break;
+                        case 12: echo("Severity 1 (Critical)");
+                        break;
+                        case 13: echo("Severity 3 (Minor)");
+                        break;
+                        case 14: echo("Severity 2 (Major)");
+                        break;
+                        case 15: echo("Severity 1 (Critical)");
+                        break;
+                        default: echo("Severity 2 (Major)");
+
+                    }
+
+
+                 ?></td>
                 <td>
                   <?php if ($isCollab) {?>
                     <div style="max-height: 1.2em; max-width: 320px;" class="link truncate" href="tickets.php?id=<?php echo $T['ticket_id']; ?>"><i class="icon-group"></i> <?php echo $subject; ?></div>
