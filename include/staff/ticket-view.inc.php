@@ -1117,7 +1117,11 @@ if ($errors['err'] && isset($_POST['a'])) {
                     if ($role->hasPerm(Ticket::PERM_CLOSE) && !$outstanding)
                         $states = array_merge($states, array('closed'));
 
-                    foreach (TicketStatusList::getStatuses(array('states' => $states)) as $s)
+                    $sorted_array=TicketStatusList::getStatuses(array('states' => $states));
+                    //ksort($sorted_array);
+                    error_log(print_r($sorted_array,TRUE));
+
+                    foreach ( $sorted_array as $s)
                     {
                         if($s->getName()=="Open")
                             continue;
@@ -1458,4 +1462,13 @@ function saveDraft() {
     if (redactor.opts.draftId)
         $('#response').redactor('plugin.draft.saveDraft');
 }
+window.onload = function() {
+            var options = $('select[name="reply_status_id"] option');
+            options.detach().sort(function(a, b) {
+                var at = $(a).text();
+                var bt = $(b).text();
+                return (at > bt) ? 1 : ((at < bt) ? -1 : 0);
+            });
+            options.appendTo('select[name="reply_status_id"]');
+};
 </script>
