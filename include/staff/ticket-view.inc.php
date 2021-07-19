@@ -1119,11 +1119,13 @@ if ($errors['err'] && isset($_POST['a'])) {
 
                     $sorted_array=TicketStatusList::getStatuses(array('states' => $states));
                     //ksort($sorted_array);
-                    error_log(print_r($sorted_array,TRUE));
+                    //error_log(print_r($sorted_array,TRUE));
 
                     foreach ( $sorted_array as $s)
                     {
                         if($s->getName()=="Open")
+                            continue;
+                        if($s->getName()=="Closed")
                             continue;
                         if (!$s->isEnabled()) 
                             continue;
@@ -1467,8 +1469,21 @@ window.onload = function() {
             options.detach().sort(function(a, b) {
                 var at = $(a).text();
                 var bt = $(b).text();
-                return (at > bt) ? 1 : ((at < bt) ? -1 : 0);
+                var fgh=at.search("current");
+                var jkl=bt.search("current");
+                if((fgh==-1) && (jkl==-1))
+                    return (at > bt) ? 1 : ((at < bt) ? -1 : 0);
+                else
+                {
+                    if(fgh!=-1)
+                        return 1;
+                    if(jkl!=-1)
+                        return 1;
+                    return 0;
+                }
+                
             });
             options.appendTo('select[name="reply_status_id"]');
+            $('select[name="reply_status_id"]').prop("selectedIndex", 0).val();
 };
 </script>
