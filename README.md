@@ -94,3 +94,11 @@ from 'maxWidth': el.hasClass('fullscreen') ? '950px' : false, to 'maxWidth': el.
 
 * Edited assets\default\css\themes.css   #container to 940px
 
+* Edited scp\tickets.php for adding project based sla option   (SLA name have to be like- PROJECTNAME_WIP_ACK_Minor)
+
+* Created new filters for assignment of SLA based on project
+
+* Hide the option for referral access in class.tickets.php file
+
+
+

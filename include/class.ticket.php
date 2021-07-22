@@ -1024,6 +1024,9 @@ implements RestrictedAccess, Threadable, Searchable {
             } else {
                 $refer->configure('desc', sprintf(__('Maintain referral access to %s'),
                         $this->getAssigned()));
+                $visibility = new VisibilityConstraint(
+                        new Q(array()), VisibilityConstraint::HIDDEN);
+                $refer->set('visibility', $visibility);
             }
         }
 
