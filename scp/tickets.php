@@ -288,9 +288,24 @@ if($_POST && !$errors):
                 
                 $conOst = new PDO($type.':host='.$host.';dbname='.$dname,$user,$pass);
                 $sla_query=null;
+                //error_log(print_r($ticket,TRUE));
                 //error_log(print_r("The reply status id -".$vars['reply_status_id'],TRUE));
-                switch((int)$vars['reply_status_id'])
+                $project_name=null;
+                $extract_project="SELECT projectlinked FROM ost_user__cdata WHERE user_id=".(int)$ticket->getUserId();
+                $extract_project = $conOst->prepare($extract_project);
+                $extract_project->execute();
+                if($rss = $extract_project->fetch())
+                        $project_name=$rss['projectlinked'];
+
+                $proj_spec_sla="SELECT COUNT(*) FROM ost_sla WHERE NAME LIKE '".$project_name."%'";
+                $proj_spec_sla = $conOst->prepare($proj_spec_sla);
+                $proj_spec_sla->execute();
+                $count_val=$proj_spec_sla->fetchColumn();
+
+                if($count_val<1)
                 {
+                switch((int)$vars['reply_status_id'])
+                    {
                     case 10:
                         if(($ticket->getSLAId()!=7)||($ticket->getSLAId()!=8)||($ticket->getSLAId()!=9))
                         {
@@ -352,9 +367,58 @@ if($_POST && !$errors):
                     break;
                     default:
                         $sla_query=null;
-                   
                         
+                    }
                 }
+                else
+                {
+
+                    $comp_SLA_name=$project_name."_";
+                    $priority_for_ticket=$ticket->getPriorityId();
+                    $end_name='';
+                    switch($priority_for_ticket)
+                    {
+                        case 1: $end_name="_Minor";
+                        break;
+                        case 2: $end_name="_Major";
+                        break;
+                        case 3: $end_name="_Critical";
+                        break;
+                        default:
+                    }
+
+                    switch((int)$vars['reply_status_id'])
+                    {
+                        case 10: 
+                            $between="ACK_WIP";
+                            $comp_SLA_name=$comp_SLA_name.$between.$end_name;
+                            $fetch_sla_id="SELECT id FROM ost_sla WHERE name like '".$comp_SLA_name."'";
+                            $fetch_sla_id = $conOst->prepare($fetch_sla_id);
+                            $fetch_sla_id->execute();
+                            $new_sla_id=$fetch_sla_id->fetchColumn();
+                            $sla_query="UPDATE ost_ticket SET sla_id=".$new_sla_id." WHERE ticket_id=:ticketid";
+                            $ticket->setSLAId((int)$new_sla_id);
+
+                        break;
+                        case 6:
+                        case 9:
+                            $between="WIP_Resolve";
+                            $comp_SLA_name=$comp_SLA_name.$between.$end_name;
+                            $fetch_sla_id="SELECT id FROM ost_sla WHERE name like '".$comp_SLA_name."'";
+                            $fetch_sla_id = $conOst->prepare($fetch_sla_id);
+                            $fetch_sla_id->execute();
+                            $new_sla_id=$fetch_sla_id->fetchColumn();
+                            $sla_query="UPDATE ost_ticket SET sla_id=".$new_sla_id." WHERE ticket_id=:ticketid";
+                            $ticket->setSLAId((int)$new_sla_id);
+
+                        break;
+                        default:
+                         $sla_query=null;
+                    }
+
+                }
+
+
                 if($sla_query)
                  {
                     $stmtOst = $conOst->prepare($sla_query);
@@ -367,8 +431,6 @@ if($_POST && !$errors):
                     $ddatemkOst->execute(array('new_due_date' => $new_due_date,'ticketid' => (int)$ticket->getId()));
                     //error_log(print_r($ticket->getSLADueDate($recompute=true),TRUE));
                  }
-
-
                  $conOst=null;
                 ////////////////////////////////////////////////////////////////////////////////////////////
 

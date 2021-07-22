@@ -90,7 +90,7 @@ from 'maxWidth': el.hasClass('fullscreen') ? '950px' : false, to 'maxWidth': el.
 
 * Edited include/staff/ticket-view.inc.php for removing Open status from dropdown list
 
-* Edited include/client/ticekts.inc.php  for printing Priority based on SLA plan on helpdesk user dashboard
+* Edited include/client/tickets.inc.php  for printing Priority based on SLA plan on helpdesk user dashboard
 
 * Edited assets\default\css\themes.css   #container to 940px
 

@@ -255,31 +255,25 @@ if ($closedTickets) {?>
                 <td><?php echo Format::date($T['created']); ?></td>
                 <td><?php echo $status; ?></td>
                 <td><?php 
+                    require(INCLUDE_DIR.'ost-config.php');
+                    $type=DBTYPE;$host=DBHOST;$dname=DBNAME;$user=DBUSER;$pass=DBPASS;
+                    $conOst = new PDO($type.':host='.$host.';dbname='.$dname,$user,$pass);
                     $sla_id=$T['sla_id'];
-                    switch($sla_id)
-                    {
-                        case 7: echo("Severity 1 (Critical)");
-                        break;
-                        case 8: echo("Severity 2 (Major)");
-                        break;
-                        case 9: echo("Severity 3 (Minor)");
-                        break;
-                        case 10: echo("Severity 3 (Minor)");
-                        break;
-                        case 11: echo("Severity 2 (Major)");
-                        break;
-                        case 12: echo("Severity 1 (Critical)");
-                        break;
-                        case 13: echo("Severity 3 (Minor)");
-                        break;
-                        case 14: echo("Severity 2 (Major)");
-                        break;
-                        case 15: echo("Severity 1 (Critical)");
-                        break;
-                        default: echo("Severity 2 (Major)");
+                    $type_sla="SELECT name FROM ost_sla WHERE id=".$sla_id;
+                    $type_sla = $conOst->prepare($type_sla);
+                    $type_sla->execute();
+                    $type_sla_name=$type_sla->fetchColumn();
 
+                    if (strpos($type_sla_name, 'Critical') !== false) {
+                        echo 'Severity 1 (Critical)';
                     }
-
+                    else if (strpos($type_sla_name, 'Major') !== false) {
+                        echo 'Severity 2 (Major)';
+                    }
+                    else {
+                        echo 'Severity 3 (Minor)';
+                    }
+                    $conOst=null;
 
                  ?></td>
                 <td>
