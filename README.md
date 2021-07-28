@@ -100,5 +100,6 @@ from 'maxWidth': el.hasClass('fullscreen') ? '950px' : false, to 'maxWidth': el.
 
 * Hide the option for referral access in class.tickets.php file
 
+* Edited ticket-view.inc.php and view.inc.php for showing projectName from ost_list_items
 
 

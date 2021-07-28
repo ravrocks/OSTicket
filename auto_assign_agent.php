@@ -101,11 +101,7 @@
   }
 
   /* Runner function*/
-  $type=DBTYPE;
-  $host=DBHOST;
-  $dname=DBNAME;
-  $user=DBUSER;
-  $pass=DBPASS;
+  $type=DBTYPE;$host=DBHOST;$dname=DBNAME;$user=DBUSER;$pass=DBPASS;
   //echo($type.':host='.$host.';dbname='.$dname);
   $conOst = new PDO($type.':host='.$host.';dbname='.$dname,$user,$pass);
 

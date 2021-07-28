@@ -89,7 +89,19 @@ if ($thisclient && $thisclient->isGuest()
                         $extract_project->execute();
                         if($rss = $extract_project->fetch())
                         {
-                            echo $rss['projectlinked'];
+                            $got_val=$rss['projectlinked'];
+                            if(gettype($got_val)=='string')
+                            {
+                                echo $got_val;
+                            }
+                            else
+                            {
+                                $ext_full_proj="SELECT extra FROM ost_list_items WHERE id=".(int)$got_val;
+                                $ext_full_proj = $conOst->prepare($ext_full_proj);
+                                $ext_full_proj->execute();
+                                $rss = $ext_full_proj->fetch();
+                                echo $rss['extra'];
+                            }
                         }
                         $conOst=null;
                     ?></td>
