@@ -26,6 +26,7 @@ require_once(INCLUDE_DIR.'class.export.php');       // For paper sizes
 
 
 // Fetch ticket queues organized by root and sub-queues
+//error_log(print_r($thisstaff,TRUE));
 $queues = CustomQueue::getHierarchicalQueues($thisstaff);
 
 $page='';

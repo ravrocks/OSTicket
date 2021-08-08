@@ -158,7 +158,7 @@ return false;">
     </div>
     <a href="#" onclick="javascript:
         $.dialog('ajax.php/tickets/search', 201);"
-        >[<?php echo __('advanced'); ?>]</a>
+        >[<?php echo __('Advanced Report'); ?>]</a>
         <i class="help-tip icon-question-sign" href="#advanced"></i>
     </form>
 </div>
@@ -170,8 +170,11 @@ return false;">
         <div class="content">
             <div class="pull-left flush-left">
                 <h2><a href="<?php echo $refresh_url; ?>"
-                    title="<?php echo __('Refresh'); ?>"><i class="icon-refresh"></i> <?php echo
-                    $queue->getName(); ?></a>
+                    title="<?php echo __('Refresh'); ?>"><i class="icon-refresh"></i> <?php
+                    if($queue->getName()=="Advanced Search")
+                        echo "Advanced Report";
+                    else
+                        echo $queue->getName(); ?></a>
                     <?php
                     if (($crit=$queue->getSupplementalCriteria()))
                         echo sprintf('<i class="icon-filter"

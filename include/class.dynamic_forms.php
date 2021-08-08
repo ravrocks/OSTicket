@@ -1826,10 +1826,23 @@ class SelectionField extends FormField {
 
     function getSearchMethods() {
         return array(
-            'set' =>        __('has a value'),
+            'set' =>      __('has a value'),
             'nset' =>     __('does not have a value'),
             'includes' =>   __('includes'),
             '!includes' =>  __('does not include'),
+        );
+    }
+
+    function getSearchMethods_custom() {
+        return array(
+            'includes' =>   __('includes'),
+            '!includes' =>  __('does not include'),
+        );
+    }
+
+    function getSearchMethods_custom2() {
+        return array(
+            'includes' =>   __('includes')
         );
     }
 

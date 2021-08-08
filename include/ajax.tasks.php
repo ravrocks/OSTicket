@@ -710,6 +710,24 @@ class TasksAjaxAPI extends AjaxController {
         }
 
         include STAFFINC_DIR . 'templates/assign.tmpl.php';
+        ?>
+
+        <script type="text/javascript">
+            
+            console.log("delete extra managers");
+            var t = document.getElementById('inside-assign');
+            var selectobject = t.rows.item(0).cells[0].getElementsByTagName('select')[0];
+            for (var i=0; i<selectobject.length; i++) {
+                //console.log(selectobject.options[i].text);
+                if (selectobject.options[i].text == 'Manager- Ajay Kumar Ramteke')
+                     selectobject.remove(i);
+                if (selectobject.options[i].text == 'Manager- Dharmapal Sahadeo Wankhede')
+                     selectobject.remove(i);         
+            }
+
+        </script>
+
+    <?php
     }
 
     function claim($tid) {

@@ -773,6 +773,14 @@ class TicketsAjaxAPI extends AjaxController {
                     $ticket->getId(),
                     ($target  ? "/$target": '')),
                 );
+       
+       /* $members=$thisstaff->getDeptAgents(array('available' => true));
+        foreach ($members as $member)
+                    {
+
+                        error_log(print_r($member->getName(),TRUE));
+                    }
+        */
 
         if ($ticket->isAssigned()) {
             if ($ticket->getStaffId() == $thisstaff->getId())
@@ -807,6 +815,25 @@ class TicketsAjaxAPI extends AjaxController {
         }
 
         include STAFFINC_DIR . 'templates/assign.tmpl.php';
+
+        ?>
+
+        <script type="text/javascript">
+            
+            console.log("delete extra managers");
+            var t = document.getElementById('inside-assign');
+            var selectobject = t.rows.item(0).cells[0].getElementsByTagName('select')[0];
+            for (var i=0; i<selectobject.length; i++) {
+                //console.log(selectobject.options[i].text);
+                if (selectobject.options[i].text == 'Manager- Ajay Kumar Ramteke')
+                     selectobject.remove(i);
+                if (selectobject.options[i].text == 'Manager- Dharmapal Sahadeo Wankhede')
+                     selectobject.remove(i);         
+            }
+
+        </script>
+
+    <?php
     }
 
     function claim($tid) {
@@ -1124,7 +1151,10 @@ class TicketsAjaxAPI extends AjaxController {
                     $prompt  = __('Select an Agent');
                     $assignees = array();
                     foreach ($members as $member)
+                    {
+
                          $assignees['s'.$member->getId()] = $member->getName();
+                    }
 
                     if (!$assignees)
                         $info['warn'] =  __('No agents available for assignment');

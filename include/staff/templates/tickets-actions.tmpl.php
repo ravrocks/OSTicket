@@ -74,6 +74,7 @@ $(function() {
     $(document).on('click.tickets', 'a.tickets-action', function(e) {
         e.preventDefault();
         var $form = $('form#tickets');
+        console.log("im innn");
         var count = checkbox_checker($form, 1);
         if (count) {
             var tids = $('.ckb:checked', $form).map(function() {

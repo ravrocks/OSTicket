@@ -950,6 +950,24 @@ class FormField {
             'match' =>      __('matches'),
         );
     }
+    
+    function getSearchMethods_custom() {
+        return array(
+            'equal' =>      __('is'),
+            'nequal' =>     __('is not'),
+            'contains' =>   __('contains'),
+            'match' =>      __('matches'),
+        );
+    }
+
+    function getSearchMethods_custom2() {
+        return array(
+            'equal' =>      __('is'),
+            'nequal' =>     __('is not'),
+            'contains' =>   __('contains'),
+            'match' =>      __('matches'),
+        );
+    }
 
     function getSearchMethodWidgets() {
         return array(
@@ -2003,6 +2021,19 @@ class ChoiceField extends FormField {
             'nset' =>     __('does not have a value'),
             'includes' =>   __('includes'),
             '!includes' =>  __('does not include'),
+        );
+    }
+
+    function getSearchMethods_custom() {
+        return array(
+            'includes' =>   __('includes'),
+            '!includes' =>  __('does not include'),
+        );
+    }
+
+    function getSearchMethods_custom2() {
+        return array(
+            'includes' =>   __('includes')
         );
     }
 
@@ -4826,8 +4857,22 @@ class CheckboxWidget extends Widget {
         ?>
         <label class="<?php echo implode(' ', $classes); ?>">
         <input id="<?php echo $this->id; ?>"
-            type="checkbox" name="<?php echo $this->name; ?>[]" <?php
-            if ($this->value) echo 'checked="checked"'; ?> value="<?php
+            type="checkbox" name="<?php echo $this->name; ?>[]" 
+            <?php
+            //error_log(print_r($config['desc'],TRUE));
+            //Code for making Project selection mandatory
+            global $thisstaff;
+            if($thisstaff->getLastName()=="Dharmapal Sahadeo Wankhede")
+            {
+                if($this->value) echo 'checked="checked"';
+            }
+            else
+            {
+                if($config['desc']=="User / Project Name")
+                    echo 'checked="checked" onclick="return false"';
+                else if ($this->value) echo 'checked="checked"';
+            }
+            ?> value="<?php
             echo $this->field->get('id'); ?>"/>
         <?php
         if ($config['desc']) {

@@ -16,7 +16,7 @@ foreach (CustomQueue::queues() as  $q)
 asort($queues);
 $queues = array(0 => ('—'.__("My Searches").'—')) + $queues;
 $queue = $search;
-$qname = $search->getName() ?:  __('Advanced Ticket Search');
+$qname = $search->getName() ?:  __('Advanced Ticket Report');
 ?>
 <div id="advanced-search" class="advanced-search">
 <h3 class="drag-handle"><?php echo Format::htmlchars($qname); ?></h3>
@@ -116,7 +116,7 @@ if ($search->isSaved()) { ?>
 <div>
   <div style="margin-top:10px;"><a href="#"
     id="save"><i class="icon-caret-<?php echo $save ? 'down' : 'right';
-    ?>"></i>&nbsp;<span><?php echo __('Save Search'); ?></span></a></div>
+    ?>"></i>&nbsp;<span><?php echo __('Save Report'); ?></span></a></div>
   <div id="save-changes" class="<?php echo $save ? '' : 'hidden'; ?>" style="padding:5px; border-top: 1px dotted #777;">
       <?php if ($parent_id) { ?>
         <input type="hidden" name="parent_id" value="<?php echo $parent_id; ?>">
@@ -163,7 +163,7 @@ if ($search->isSaved()) { ?>
       } else { ?>
       <button class="button" type="submit" name="submit" value="search"
         id="do_search"><i class="icon-search"></i>
-        <?php echo __('Search'); ?></button>
+        <?php echo __('Fetch'); ?></button>
       <?php
       } ?>
     </span>
@@ -172,6 +172,7 @@ if ($search->isSaved()) { ?>
 </form>
 
 <script>
+
 +function() {
    // Return a helper with preserved width of cells
    var fixHelper = function(e, ui) {
@@ -276,7 +277,14 @@ if ($search->isSaved()) { ?>
         if ($('button.save', $form).hasClass('pending'))
             alert('Unsaved Changes - save or cancel to discard!');
         else
-            window.location.href = 'tickets.php?queue='+id;
+        {
+            console.log();
+            //window.location.href = 'tickets.php?queue='+id;
+        }
     });
+
+    
+
 }();
+
 </script>

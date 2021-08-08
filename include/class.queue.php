@@ -200,10 +200,13 @@ class CustomQueue extends VerySimpleModel {
         }
 
         foreach ($searchable ?: array() as $path => $field)
+        {
+            //error_log(print_r(static::getSearchField($field, $path),TRUE));
             $fields = array_merge($fields, static::getSearchField($field, $path));
+        }
 
         $form = new AdvancedSearchForm($fields, $source);
-
+        
         // Field selection validator
         if ($this->criteriaRequired()) {
             $form->addValidator(function($form) {
@@ -252,27 +255,25 @@ class CustomQueue extends VerySimpleModel {
      */
     function getCurrentSearchFields($source=array(), $criteria=array()) {
         static $basic = array(
-            'Ticket' => array(
+            'Ticket' => array(                
+                'user__cdata__projectlinked',
                 'status__id',
-                'status__state',
-                'dept_id',
-                'assignee',
-                'topic_id',
-                'created',
-                'est_duedate',
-                'duedate',
+                'cdata__priority',
+                'created'
             )
         );
 
         $all = $this->getSupportedMatches();
         $core = array();
 
+        //error_log(print_r($all['user__cdata__projectlinked'],TRUE));
         // Include basic fields for new searches
         if (!isset($this->id))
             foreach ($basic[$this->getRoot()] as $path)
-                if (isset($all[$path]))
-                    $core[$path] = $all[$path];
-
+                {
+                    if (isset($all[$path]))
+                        $core[$path] = $all[$path];
+                }
         // Add others from current configuration
         foreach ($criteria ?: $this->getCriteria() as $C) {
             list($path) = $C;
@@ -450,7 +451,18 @@ class CustomQueue extends VerySimpleModel {
                 'classes' => 'inline',
             ),
         ));
-        $methods = $field->getSearchMethods();
+
+        //error_log(print_r($label,TRUE));
+        global $thisstaff;
+        if($label=="User / Project Name")
+        {
+            if($thisstaff->getLastName()=="Dharmapal Sahadeo Wankhede")
+                $methods = $field->getSearchMethods_custom();
+            else
+                $methods = $field->getSearchMethods_custom2();
+        }
+        else
+           $methods = $field->getSearchMethods();
 
         //remove future options for datetime fields that can't be in the future
         if (in_array($field->getLabel(), DateTimeField::getPastPresentLabels()))
@@ -464,6 +476,7 @@ class CustomQueue extends VerySimpleModel {
             )), VisibilityConstraint::HIDDEN),
         ));
         $offs = 0;
+        global $thisstaff;
         foreach ($field->getSearchMethodWidgets() as $m=>$w) {
             if (!$w)
                 continue;
@@ -473,7 +486,44 @@ class CustomQueue extends VerySimpleModel {
             $args['visibility'] = new VisibilityConstraint(new Q(array(
                     "{$name}+method__eq" => $m,
                 )), VisibilityConstraint::HIDDEN);
+            //error_log(print_r("$name+$m",TRUE));
             $pieces["{$name}+{$m}"] = new $class($args);
+            if("$name+$m"=="user__cdata__projectlinked+includes")
+              {
+                //error_log(print_r($pieces['user__cdata__projectlinked+includes']->ht['choices'],TRUE));
+                if($thisstaff->ht['lastname']=="Ajay Kumar Ramteke")
+                    {
+                        $temp_arx=$pieces['user__cdata__projectlinked+includes']->ht['choices'];
+                        foreach ($temp_arx as $indexx=>$item) {
+                            if($item=="Nagpur Smart City")
+                                continue;
+                            else if($item=="Raipur Smart City")
+                                continue;
+                            else
+                                unset($temp_arx[$indexx]);
+                        }
+                        $pieces['user__cdata__projectlinked+includes']->ht['choices']=$temp_arx;
+                        //error_log(print_r($temp_arx,TRUE));
+                    }
+              }
+              if("$name+$m"=="user__cdata__projectlinked+!includes")
+              {
+                if($thisstaff->ht['lastname']=="Ajay Kumar Ramteke")
+                    {
+                        $temp_arx=$pieces['user__cdata__projectlinked+!includes']->ht['choices'];
+                        foreach ($temp_arx as $indexx=>$item) {
+                            if($item=="Nagpur Smart City")
+                                continue;
+                            else if($item=="Raipur Smart City")
+                                continue;
+                            else
+                                unset($temp_arx[$indexx]);
+                        }
+                        $pieces['user__cdata__projectlinked+!includes']->ht['choices']=$temp_arx;
+                        //error_log(print_r($temp_arx,TRUE));
+                    }
+              }
+
         }
         return $pieces;
     }
@@ -712,17 +762,17 @@ class CustomQueue extends VerySimpleModel {
                 "id" => 3,
                 "heading" => "Subject",
                 "primary" => 'cdata__subject',
-                "width" => 250,
+                "width" => 150,
                 "bits" => QueueColumn::FLAG_SORTABLE,
                 "filter" => "link:ticket",
                 "annotations" => '[{"c":"TicketThreadCount","p":">"},{"c":"ThreadAttachmentCount","p":"a"},{"c":"OverdueFlagDecoration","p":"<"}]',
                 "conditions" => '[{"crit":["isanswered","nset",null],"prop":{"font-weight":"bold"}}]',
-                "truncate" => 'ellipsis',
+                "truncate" => 'wrap-lines',
             )),
             QueueColumn::placeholder(array(
                 "id" => 4,
-                "heading" => "From",
-                "primary" => 'user__name',
+                "heading" => "Project Name",
+                "primary" => 'user__cdata__projectlinked',
                 "width" => 150,
                 "bits" => QueueColumn::FLAG_SORTABLE,
             )),
@@ -731,6 +781,21 @@ class CustomQueue extends VerySimpleModel {
                 "heading" => "Priority",
                 "primary" => 'cdata__priority',
                 "width" => 120,
+                "bits" => QueueColumn::FLAG_SORTABLE,
+            )),
+            QueueColumn::placeholder(array(
+                "id" => 6,
+                "heading" => "Status",
+                "primary" => 'status__id',
+                "width" => 100,
+                "bits" => QueueColumn::FLAG_SORTABLE,
+            )),
+            QueueColumn::placeholder(array(
+                "id" => 7,
+                "heading" => "Domain",
+                "primary" => 'dept_id',
+                "annotations" => '[{"crit":["dept_id","includes",{"5":"Network"}],"prop":{"background-color":"#a8ffce"}},{"crit":["dept_id","includes",{"4":"Server & Storage"}],"prop":{"background-color":"#fbf665"}},{"crit":["dept_id","includes",{"11":"Database"}],"prop":{"background-color":"#c693f0"}},{"crit":["dept_id","includes",{"6":"Cloud"}],"prop":{"background-color":"#8af7ff"}},{"crit":["dept_id","includes",{"10":"SWM \/ Smart Parking \/ VMD \/ Smart Env"}],"prop":{"background-color":"#c6ff5c"}},{"crit":["dept_id","includes",{"13":"Surveillance & VMS"}],"prop":{"background-color":"#ffbf75"}},{"crit":["dept_id","includes",{"9":"ITMS \/ ATCS"}],"prop":{"background-color":"#6bff42"}},{"crit":["dept_id","includes",{"8":"eGov \/ DMS \/ ERP"}],"prop":{"background-color":"#7866ff"}},{"crit":["dept_id","includes",{"14":"EMS\/NMS"}],"prop":{"background-color":"#bdff42"}}]',
+                "width" => 100,
                 "bits" => QueueColumn::FLAG_SORTABLE,
             )),
             QueueColumn::placeholder(array(
@@ -1445,7 +1510,7 @@ class CustomQueue extends VerySimpleModel {
             ->order_by('parent_id', '_sort', 'title');
         $all = $query->asArray();
         // Find all the queues with a given parent
-        $for_parent = function($pid) use ($primary, $all, &$for_parent) {
+        $for_parent = function($pid,$namez) use ($primary, $all, &$for_parent) {
             $results = [];
             foreach (new \ArrayIterator($all) as $q) {
                 if ($q->parent_id != $pid)
@@ -1455,14 +1520,33 @@ class CustomQueue extends VerySimpleModel {
                             ($primary &&  !$q->isAQueue())
                             || (!$primary && $q->isAQueue())))
                     continue;
-
-                $results[] = [ $q, $for_parent($q->getId()) ];
+                if($namez=='Manager- Ajay Kumar Ramteke')
+                    {
+                        if($q->getId()==5) //Ticket Queue ID for MY Tickets
+                        continue;
+                        if($q->getId()==26) //Ticket Queue ID for Overdue
+                        continue;
+                        if($q->getId()==1) //Ticket Queue ID for Open
+                        continue;
+                        if($q->getId()==19) //Ticket Queue ID for Open
+                        continue;
+                        if($q->getId()==8) //Ticket Queue ID for Closed
+                        continue;
+                        if($q->getId()==44) //Ticket Queue ID for Vizag Smart City
+                        continue;
+                    }
+                $results[] = [ $q, $for_parent($q->getId(),$namez) ];
             }
+            
+            //Code for Setting Ticket Queues Based on Type of Manager
 
+
+            //////////////////////////////////////////////////////// 
+            //error_log(print_r($results[5],TRUE));
             return $results;
         };
 
-        return $for_parent($pid);
+        return $for_parent($pid,$staff->getName()->getOriginal());
     }
 
     static function getOrmPath($name, $query=null) {

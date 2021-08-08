@@ -5,15 +5,43 @@
   require('client.inc.php');
   require(INCLUDE_DIR.'ost-config.php');
 
-  function assignTicketToBoredStaff($conOst, $ticket, $deptid) {
+  function assignTicketToBoredStaff($conOst, $ticket, $deptid,$userid) {
+    $sqlOkm='';
+    //error_log(print_r("Dept is is-> ".$deptid,TRUE));
+    //error_log(print_r("Userid is-> ".$userid,TRUE));
+    
+    // If condition only triggered for EMS/NMS type of Department
+    if($deptid==14)
+    {
+         $fetch_proj = "SELECT value FROM ost_list_items WHERE id IN (SELECT projectlinked FROM ost_user__cdata WHERE user_id=:userid)";
+         $stmt_fetch_proj = $conOst->prepare($fetch_proj);
+         $stmt_fetch_proj->execute(array('userid' => $userid));
+         if ($rs_fetch_proj = $stmt_fetch_proj->fetch()) {
+         //switch condition to match Project name and Assign tickets to specific project based SME 
+         switch($rs_fetch_proj['value'])
+         {
+            case "Pune Smart City":
+            //manually selecting userid based on Project
+            $sqlOkm = "SELECT id,dept_id,mail FROM okm_assigner WHERE active=1 AND dept_id=".$deptid." AND id=41 GROUP BY tickets HAVING tickets=MIN(tickets) LIMIT 1";
+            break;
+            default:
+            $sqlOkm = "SELECT id,dept_id,mail FROM okm_assigner WHERE active=1 AND dept_id=".$deptid." GROUP BY tickets HAVING tickets=MIN(tickets) LIMIT 1";
+         }
+       }
+       else
+            $sqlOkm = "SELECT id,dept_id,mail FROM okm_assigner WHERE active=1 AND dept_id=".$deptid." GROUP BY tickets HAVING tickets=MIN(tickets) LIMIT 1";
+
+    }
+    else
     $sqlOkm = "SELECT id,dept_id,mail FROM okm_assigner WHERE active=1 AND dept_id=".$deptid." GROUP BY tickets HAVING tickets=MIN(tickets) LIMIT 1";
+
     $stmtOkm = $conOst->prepare($sqlOkm);
     $stmtOkm->execute();
 
     if ($rsOkm = $stmtOkm->fetch()) {
       $staffId = $rsOkm['id'];
       $staffMail = $rsOkm['mail'];
-      echo "Assign ticket ".$ticket." to staff ".$staffId." (".$staffMail.")\n";
+      //echo "Assign ticket ".$ticket." to staff ".$staffId." (".$staffMail.")\n";
 
       // Assign the ticket
       $sqlOst = "UPDATE ost_ticket SET staff_id=:staff WHERE ticket_id=:ticket";
@@ -46,10 +74,11 @@
     } else {
       die("Query did no return any staff member");
     }
+    
   }
 
   /**
-   * Assing a ticket to an user
+   * Assinging a ticket to an user
    */
   function assignTicket($con, $ticket, $staff) {
     $sql = "UPDATE ost_ticket SET staff_id=:staff WHERE ticket_id=:ticket";
@@ -62,7 +91,7 @@
    */
   function getUnassignedTickets($con) {
 
-    $sql = "SELECT ticket_id, number, dept_id, staff_id, status_id FROM ost_ticket WHERE status_id=1 and staff_id=0";
+    $sql = "SELECT ticket_id, number, dept_id, staff_id, status_id, user_id FROM ost_ticket WHERE status_id=1 and staff_id=0";
     $ret = array();
     $ret2 = array();
     $stmt = $con->prepare($sql);
@@ -71,14 +100,14 @@
     while ($rs = $stmt->fetch()) {
       $ret[] = $rs['ticket_id'];
       $ret2[] = $rs['dept_id'];
-      //echo $rs['ticket_id'];
+      $ret3[] = $rs['user_id'];  
     }
-    return [$ret,$ret2];
+    return [$ret,$ret2,$ret3];
   }
 
   /**
-    Update okm_assigner table if any new users are added to the system with Roleid=2[Expanded Access]
-    If Roleid=3[Full Access] the algo will not take into consideration those users
+    Update okm_assigner table if any new users are added to the system with only Roleid=2[Expanded Access]
+    If Roleid=3[Full Access] the algorithm will not take into consideration those users.
     Taken into the consideration, the newly created users are mapped accordingly to the Departments
   */
   function updateOKM_Assigner($con){
@@ -102,16 +131,19 @@
 
   /* Runner function*/
   $type=DBTYPE;$host=DBHOST;$dname=DBNAME;$user=DBUSER;$pass=DBPASS;
-  //echo($type.':host='.$host.';dbname='.$dname);
   $conOst = new PDO($type.':host='.$host.';dbname='.$dname,$user,$pass);
 
   //error_log($conOst);
   updateOKM_Assigner($conOst);
   $received_array=getUnassignedTickets($conOst);
-  foreach (array_combine($received_array[0], $received_array[1]) as $ticket => $deptid) {
-    //echo $ticket;
-    //echo "<br>";
-    //echo $deptid;
-    $staff = assignTicketToBoredStaff($conOst, $ticket, $deptid);
-  }
+
+  $codes=$received_array[0];
+  $deptnames=$received_array[1];
+  $userids=$received_array[2];
+
+  foreach( $codes as $index => $code ) {
+   $staff = assignTicketToBoredStaff($conOst, $code, $deptnames[$index],$userids[$index]);
+   //error_log(print_r($code .'-'.$deptnames[$index].'-'.$userids[$index],TRUE));
+}
+
 ?>

@@ -25,14 +25,26 @@ if (($search instanceof SavedQueue) && !$search->checkOwnership($thisstaff)) {
 }
 
 foreach (array_keys($info) as $F) {
-    ?><input type="hidden" name="fields[]" value="<?php echo $F; ?>"/><?php
+        ?><input type="hidden" name="fields[]" value="<?php echo $F; ?>"/>
+        <?php
 }
 $has_errors = !!$form->errors();
 $inbody = false;
 $already_listed = [];
 $first_field = true;
+$second_field=true;
+
+$confirm_visibility=true;
+
+if($thisstaff->getLastName()=="Dharmapal Sahadeo Wankhede")
+    $confirm_visibility=true;
+else
+    $confirm_visibility=false;
+
 foreach ($form->getFields() as $name=>$field) {
+
     @list($name, $sub) = explode('+', $field->get('name'), 2);
+    //error_log(print_r($name.'  '.$sub,TRUE));
     $already_listed[$name] = 1;
     if ($sub === 'search') {
         if (!$first_field) {
@@ -43,15 +55,48 @@ foreach ($form->getFields() as $name=>$field) {
         $first_field = false;
     }
     elseif (!$first_field && !$inbody) {
-        echo sprintf('<div class="adv-search-field-body %s">',
-            !$has_errors && isset($info[$name]) && $info[$name]['active'] ? 'hidden' : '');
+        echo sprintf('<div class="adv-search-field-body %s">',!$has_errors && isset($info[$name]) && $info[$name]['active'] ? 'hidden' : '');
         $inbody = true;
     }
 ?>
-    <fieldset id="field<?php echo $field->getWidget()->id; ?>" <?php
+    <fieldset id="field<?php echo $field->getWidget()->id; ?>" 
+        <?php
         $class = array();
-        if (!$field->isVisible())
-            $class[] = "hidden";
+        //error_log(print_r($field->_form->fields['user__cdata__projectlinked+search']->isVisible(),TRUE));
+        if($confirm_visibility)
+        {
+            if (!$field->isVisible())
+            {
+            if($name)
+                $class[] = "hidden";
+            else if($sub === 'method')
+                $class[] = "visible";
+            else
+                $class[] = "hidden";
+            }
+        }
+        else
+        {
+            if (!$field->isVisible())
+            {
+            if($name!="user__cdata__projectlinked")
+                $class[] = "hidden";
+            else if($sub === 'method')
+                $class[] = "visible";
+            else if ($field->get('__searchval__'))
+                { 
+                    if($second_field)
+                       {
+                        $class[] = "visible";
+                        $second_field=false;
+                       }
+                       else
+                        $class[] = "hidden";
+                }
+            else
+                $class[] = "hidden";
+            }
+        }
         if ($sub === 'method')
             $class[] = "adv-search-method";
         elseif ($sub === 'search')
@@ -62,12 +107,14 @@ foreach ($form->getFields() as $name=>$field) {
             echo 'class="'.implode(' ', $class).'"';
         ?>>
         <?php echo $field->render(); ?>
-        <?php if (!$has_errors && $sub === 'search' && isset($info[$name]) && $info[$name]['active']) { ?>
+        <?php if (!$has_errors && $sub === 'search' && isset($info[$name]) && $info[$name]['active']) 
+        { ?>
             <span style="padding-left: 5px">
             <a href="#"  data-name="<?php echo Format::htmlchars($name); ?>" onclick="javascript:
     var $this = $(this),
         name = $this.data('name'),
         expanded = $this.data('expanded') || false;
+    console.log($this);
     $this.closest('.adv-search-field-container').find('.adv-search-field-body').slideDown('fast');
     $this.find('span.faded').hide();
     $this.find('i').removeClass('icon-caret-right').addClass('icon-caret-down');
@@ -77,11 +124,13 @@ foreach ($form->getFields() as $name=>$field) {
             </span>
         <?php } ?>
         <?php foreach ($field->errors() as $E) {
+            $second_field=false;
             ?><div class="error"><?php echo $E; ?></div><?php
         } ?>
     </fieldset>
     <?php if ($name[0] == ':' && substr($name, -7) == '+search') {
-        list($N,) = explode('+', $name, 2); ?>
+        list($N,) = explode('+', $name, 2);
+         ?>
     <input type="hidden" name="fields[]" value="<?php echo $N; ?>"/>
     <?php }
 }
