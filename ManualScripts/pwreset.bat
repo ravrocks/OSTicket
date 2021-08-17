@@ -1,0 +1,1 @@
+php C:/inetpub/wwwroot/osTicket/copy_all_email.php

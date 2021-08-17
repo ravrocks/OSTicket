@@ -1067,7 +1067,7 @@ if ($errors['err'] && isset($_POST['a'])) {
                         break;
                     } ?>
                     <input type="hidden" name="draft_id" value=""/>
-                    <textarea name="response" id="response" cols="50"
+                    <textarea name="response" id="response" cols="120"
                         data-signature-field="signature" data-dept-id="<?php echo $dept->getId(); ?>"
                         data-signature="<?php
                             echo Format::htmlchars(Format::viewableImages($signature)); ?>"

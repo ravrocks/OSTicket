@@ -602,7 +602,7 @@ else
                 <td>
                     <div class="error"><?php echo $errors['response']; ?></div>
                     <input type="hidden" name="draft_id" value=""/>
-                    <textarea name="response" id="task-response" cols="50"
+                    <textarea name="response" id="task-response" cols="120"
                         data-signature-field="signature" data-dept-id="<?php echo $dept->getId(); ?>"
                         data-signature="<?php
                             echo Format::htmlchars(Format::viewableImages($signature)); ?>"

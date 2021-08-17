@@ -49,6 +49,10 @@ if($_POST) {
                 elseif (!$staff->sendResetEmail()) {
                     $tpl = 'pwreset.sent.php';
                 }
+                else
+                {
+                    $msg = __('Unable to reset password. Contact your administrator');
+                }
             }
             else
                 $msg = sprintf(__('Unable to verify username %s'),

@@ -108,6 +108,8 @@ Changes-
  5. Edit advanced-search-criteria.tmpl.php to fix the input boxes for PM/HQ-PM.
 
 
+* Modified class.staff.php and class.user.php to add functionality of password reset maximum attempts(3)
+
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 

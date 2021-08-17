@@ -17,6 +17,23 @@ require('client.inc.php');
 define('SOURCE','Web'); //Ticket source.
 $ticket = null;
 $errors=array();
+
+//page
+$nav->setActiveNav('new');
+if ($cfg->isClientLoginRequired()) {
+    if ($cfg->getClientRegistrationMode() == 'disabled') {
+        Http::redirect('view.php');
+    }
+    elseif (!$thisclient) {
+        //error_log(print_r($cfg,TRUE));
+        require_once 'secure.inc.php';
+    }
+    elseif ($thisclient->isGuest()) {
+        require_once 'login.php';
+        exit();
+    }
+}
+
 if ($_POST) {
     $vars = $_POST;
     $vars['deptId']=$vars['emailId']=0; //Just Making sure we don't accept crap...only topicId is expected.
@@ -56,21 +73,6 @@ if ($_POST) {
         $errors['err'] = $errors['err'] ?: sprintf('%s %s',
             __('Unable to create a ticket.'),
             __('Correct any errors below and try again.'));
-    }
-}
-
-//page
-$nav->setActiveNav('new');
-if ($cfg->isClientLoginRequired()) {
-    if ($cfg->getClientRegistrationMode() == 'disabled') {
-        Http::redirect('view.php');
-    }
-    elseif (!$thisclient) {
-        require_once 'secure.inc.php';
-    }
-    elseif ($thisclient->isGuest()) {
-        require_once 'login.php';
-        exit();
     }
 }
 

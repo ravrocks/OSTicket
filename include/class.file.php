@@ -318,6 +318,12 @@ class AttachmentFile extends VerySimpleModel {
     /* Function assumes the files types have been validated */
     static function upload($file, $ft='T', $deduplicate=true) {
 
+        
+        global $thisclient;
+        if(!is_object($thisclient) || !$thisclient->isValid()) die('Access denied 404');
+        //error_log(print_r($thisclient->get,TRUE));
+
+
         if(!$file['name'] || $file['error'] || !is_uploaded_file($file['tmp_name']))
             return false;
 

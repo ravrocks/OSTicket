@@ -234,7 +234,7 @@ if($_POST && !$errors):
             {
                 case $open_Status_id:
                     $vars['reply_status_id']=$ack_Status_id;
-                    error_log(print_r("Automatic Change to ACK",TRUE));
+                    //error_log(print_r("Automatic Change to ACK",TRUE));
                 break;
                 case $ack_Status_id:
                     if(($desired_status==$open_Status_id))

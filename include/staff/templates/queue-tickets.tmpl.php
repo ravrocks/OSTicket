@@ -131,8 +131,8 @@ $pageNav->setURL('tickets.php', $args);
 ?>
 
 <!-- SEARCH FORM START -->
-<div id='basic_search'>
-  <div class="pull-right" style="height:25px">
+<div id='basic_search' style="margin: -10px -10px;min-height: 22px;margin-bottom: 5px">
+  <div class="pull-right" style="height:20px">
     <span class="valign-helper"></span>
     <?php
     require 'queue-quickfilter.tmpl.php';
@@ -149,17 +149,19 @@ $pageNav->setURL('tickets.php', $args);
 return false;">
     <input type="hidden" name="a" value="search">
     <input type="hidden" name="search-type" value=""/>
-    <div class="attached input">
+    <div class="attached input pull-right" >
       <input type="text" class="basic-search" data-url="ajax.php/tickets/lookup" name="query"
         autofocus size="30" value="<?php echo Format::htmlchars($_REQUEST['query'], true); ?>"
         autocomplete="off" autocorrect="off" autocapitalize="off">
       <button type="submit" class="attached button"><i class="icon-search"></i>
       </button>
     </div>
-    <a href="#" onclick="javascript:
+    <div class="pull-left" style="margin-top:2px;font-size: 15px">
+    <a href="#" class="pull-left" style="font-family: 'Enriqueta', arial, serif; font-weight: bold;" onclick="javascript:
         $.dialog('ajax.php/tickets/search', 201);"
-        >[<?php echo __('Advanced Report'); ?>]</a>
+        ><?php echo __('Advanced Report&nbsp'); ?></a>
         <i class="help-tip icon-question-sign" href="#advanced"></i>
+    </div>
     </form>
 </div>
 <!-- SEARCH FORM END -->

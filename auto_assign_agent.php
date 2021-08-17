@@ -17,7 +17,8 @@
          $stmt_fetch_proj = $conOst->prepare($fetch_proj);
          $stmt_fetch_proj->execute(array('userid' => $userid));
          if ($rs_fetch_proj = $stmt_fetch_proj->fetch()) {
-         //switch condition to match Project name and Assign tickets to specific project based SME 
+         //switch condition to match Project name and Assign tickets to specific project based SME
+         //error_log(print_r("New ticket belongs to- ".$rs_fetch_proj['value'],TRUE)); 
          switch($rs_fetch_proj['value'])
          {
             case "Pune Smart City":
@@ -25,7 +26,8 @@
             $sqlOkm = "SELECT id,dept_id,mail FROM okm_assigner WHERE active=1 AND dept_id=".$deptid." AND id=41 GROUP BY tickets HAVING tickets=MIN(tickets) LIMIT 1";
             break;
             default:
-            $sqlOkm = "SELECT id,dept_id,mail FROM okm_assigner WHERE active=1 AND dept_id=".$deptid." GROUP BY tickets HAVING tickets=MIN(tickets) LIMIT 1";
+            //fetching EMS/NMS Agents which dont belong to specific Project codes
+            $sqlOkm = "SELECT id,dept_id,mail FROM okm_assigner WHERE active=1 AND dept_id=".$deptid." AND id!=41 GROUP BY tickets HAVING tickets=MIN(tickets) LIMIT 1";
          }
        }
        else
@@ -72,6 +74,7 @@
       }
       */
     } else {
+      error_log(print_r("Query did no return any staff member",TRUE));
       die("Query did no return any staff member");
     }
     
