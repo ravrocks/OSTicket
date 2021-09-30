@@ -4862,15 +4862,18 @@ class CheckboxWidget extends Widget {
             //error_log(print_r($config['desc'],TRUE));
             //Code for making Project selection mandatory
             global $thisstaff;
-            if($thisstaff->getLastName()=="Dharmapal Sahadeo Wankhede")
+            if(!($thisstaff->getLastName()=="admin"))
             {
+            if(($thisstaff->getLastName()=="Dharmapal Sahadeo Wankhede")||($thisstaff->getLastName()=="G Sivasubramanian"))
+                {
                 if($this->value) echo 'checked="checked"';
-            }
+                }
             else
-            {
+                {
                 if($config['desc']=="User / Project Name")
                     echo 'checked="checked" onclick="return false"';
                 else if ($this->value) echo 'checked="checked"';
+                }
             }
             ?> value="<?php
             echo $this->field->get('id'); ?>"/>

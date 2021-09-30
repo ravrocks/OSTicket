@@ -44,7 +44,6 @@ if ($_POST) {
     // Rotate the CSRF token (original cannot be reused)
     $ost->getCSRF()->rotate();
 }
-
 if ($_POST && isset($_POST['luser'])) {
     if (!$_POST['luser'])
         $errors['err'] = __('Valid username or email address is required');

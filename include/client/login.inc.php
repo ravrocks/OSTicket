@@ -15,9 +15,11 @@ if ($content) {
 }
 
 ?>
+
 <h1><?php echo Format::display($title); ?></h1>
 <p><?php echo Format::display($body); ?></p>
-<form action="login.php" method="post" id="clientLogin">
+
+<form action="login.php" method="post" name="clientLogin" id="clientLogin" >
     <?php csrf_token(); ?>
 <div style="display:table-row">
     <div class="login-box">
@@ -29,7 +31,7 @@ if ($content) {
         <input id="passwd" placeholder="<?php echo __('Password'); ?>" type="password" name="lpasswd" size="30" value="<?php echo $passwd; ?>" class="nowarn"></td>
     </div>
     <p>
-        <input class="btn" type="submit" value="<?php echo __('Sign In'); ?>">
+        <input class="btn" type="submit" value="<?php echo __('Sign In'); ?>" onclick="return call_helper();">
 <?php if ($suggest_pwreset) { ?>
         <a style="padding-top:4px;display:inline-block;" href="pwreset.php"><?php echo __('Forgot My Password'); ?></a>
 <?php } ?>
@@ -44,7 +46,8 @@ foreach (UserAuthenticationBackend::allRegistered() as $bk)
         $ext_bks[] = $bk;
 
 if (count($ext_bks)) {
-    foreach ($ext_bks as $bk) { ?>
+    foreach ($ext_bks as $bk) {
+        ?>
 <div class="external-auth"><?php $bk->renderExternalLink(); ?></div><?php
     }
 }

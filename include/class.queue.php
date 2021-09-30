@@ -454,15 +454,20 @@ class CustomQueue extends VerySimpleModel {
 
         //error_log(print_r($label,TRUE));
         global $thisstaff;
-        if($label=="User / Project Name")
+        if(!($thisstaff->getLastName()=="admin"))
         {
-            if($thisstaff->getLastName()=="Dharmapal Sahadeo Wankhede")
+         if($label=="User / Project Name")
+         {
+            if(($thisstaff->getLastName()=="Dharmapal Sahadeo Wankhede") || ($thisstaff->getLastName()=="G Sivasubramanian"))
                 $methods = $field->getSearchMethods_custom();
             else
                 $methods = $field->getSearchMethods_custom2();
+         }
+         else
+           $methods = $field->getSearchMethods();
         }
         else
-           $methods = $field->getSearchMethods();
+            $methods = $field->getSearchMethods();
 
         //remove future options for datetime fields that can't be in the future
         if (in_array($field->getLabel(), DateTimeField::getPastPresentLabels()))
@@ -488,11 +493,13 @@ class CustomQueue extends VerySimpleModel {
                 )), VisibilityConstraint::HIDDEN);
             //error_log(print_r("$name+$m",TRUE));
             $pieces["{$name}+{$m}"] = new $class($args);
+            if(!($thisstaff->ht['lastname']=="admin"))
+            {
             if("$name+$m"=="user__cdata__projectlinked+includes")
-              {
+               {
                 //error_log(print_r($pieces['user__cdata__projectlinked+includes']->ht['choices'],TRUE));
                 if($thisstaff->ht['lastname']=="Ajay Kumar Ramteke")
-                    {
+                {
                         $temp_arx=$pieces['user__cdata__projectlinked+includes']->ht['choices'];
                         foreach ($temp_arx as $indexx=>$item) {
                             if($item=="Nagpur Smart City")
@@ -501,11 +508,23 @@ class CustomQueue extends VerySimpleModel {
                                 continue;
                             else
                                 unset($temp_arx[$indexx]);
-                        }
-                        $pieces['user__cdata__projectlinked+includes']->ht['choices']=$temp_arx;
-                        //error_log(print_r($temp_arx,TRUE));
                     }
-              }
+                }
+                elseif($thisstaff->ht['lastname']=="Atmaram Vitthal Magar")
+                    {
+                        $temp_arx=$pieces['user__cdata__projectlinked+includes']->ht['choices'];
+                        foreach ($temp_arx as $indexx=>$item) {
+                            if($item=="Pune Smart City")
+                                continue;
+                            else
+                                unset($temp_arx[$indexx]);
+                        }
+                    }
+                    $temp_arx=$pieces['user__cdata__projectlinked+includes']->ht['choices'];
+                    $pieces['user__cdata__projectlinked+includes']->ht['choices']=$temp_arx;
+                        //error_log(print_r($temp_arx,TRUE));
+             }
+              
               if("$name+$m"=="user__cdata__projectlinked+!includes")
               {
                 if($thisstaff->ht['lastname']=="Ajay Kumar Ramteke")
@@ -522,8 +541,20 @@ class CustomQueue extends VerySimpleModel {
                         $pieces['user__cdata__projectlinked+!includes']->ht['choices']=$temp_arx;
                         //error_log(print_r($temp_arx,TRUE));
                     }
+                elseif($thisstaff->ht['lastname']=="Atmaram Vitthal Magar")
+                {
+                    $temp_arx=$pieces['user__cdata__projectlinked+!includes']->ht['choices'];
+                        foreach ($temp_arx as $indexx=>$item) {
+                            if($item=="Pune Smart City")
+                                continue;
+                            else
+                                unset($temp_arx[$indexx]);
+                        }
+                        $pieces['user__cdata__projectlinked+!includes']->ht['choices']=$temp_arx;
+                        //error_log(print_r($temp_arx,TRUE));
+                }
               }
-
+           }
         }
         return $pieces;
     }
@@ -1534,7 +1565,18 @@ class CustomQueue extends VerySimpleModel {
                         continue;
                         if($q->getId()==44) //Ticket Queue ID for Vizag Smart City
                         continue;
+                        if($q->getId()==49) //Ticket Queue ID for Pune Smart City
+                        continue;
                     }
+                elseif($namez=='Manager- Atmaram Vitthal Magar')
+                    {
+                        if($q->getId()==40) //Ticket Queue ID for MY Tickets
+                            $results[] = [ $q, $for_parent($q->getId(),$namez) ];
+                        if($q->getId()!=49) //Ticket Queue ID for Pune Smart City
+                        continue;
+
+                    }
+                
                 $results[] = [ $q, $for_parent($q->getId(),$namez) ];
             }
             

@@ -36,7 +36,7 @@ $second_field=true;
 
 $confirm_visibility=true;
 
-if($thisstaff->getLastName()=="Dharmapal Sahadeo Wankhede")
+if(($thisstaff->getLastName()=="Dharmapal Sahadeo Wankhede")||($thisstaff->getLastName()=="G Sivasubramanian"))
     $confirm_visibility=true;
 else
     $confirm_visibility=false;
