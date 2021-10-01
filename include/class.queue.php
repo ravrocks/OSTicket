@@ -495,8 +495,10 @@ class CustomQueue extends VerySimpleModel {
             $pieces["{$name}+{$m}"] = new $class($args);
             if(!($thisstaff->ht['lastname']=="admin"))
             {
+                          
             if("$name+$m"=="user__cdata__projectlinked+includes")
                {
+                $temp_arx=$pieces['user__cdata__projectlinked+includes']->ht['choices'];
                 //error_log(print_r($pieces['user__cdata__projectlinked+includes']->ht['choices'],TRUE));
                 if($thisstaff->ht['lastname']=="Ajay Kumar Ramteke")
                 {
@@ -520,13 +522,14 @@ class CustomQueue extends VerySimpleModel {
                                 unset($temp_arx[$indexx]);
                         }
                     }
-                    $temp_arx=$pieces['user__cdata__projectlinked+includes']->ht['choices'];
+                    
                     $pieces['user__cdata__projectlinked+includes']->ht['choices']=$temp_arx;
                         //error_log(print_r($temp_arx,TRUE));
              }
               
               if("$name+$m"=="user__cdata__projectlinked+!includes")
               {
+                $temp_arx=$pieces['user__cdata__projectlinked+!includes']->ht['choices'];
                 if($thisstaff->ht['lastname']=="Ajay Kumar Ramteke")
                     {
                         $temp_arx=$pieces['user__cdata__projectlinked+!includes']->ht['choices'];

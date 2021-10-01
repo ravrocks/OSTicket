@@ -103,9 +103,8 @@ Changes-
 * The below changes go together on addition of any new PM/HQ-PM->
  1. Edited include/class.forms.php Line 4864 to enforce search criteria Project name for PM
  2. Edit class.queue.php Line 457 to fix project list population for particular Project Manager
- 3. Edit class.forms.php  to fix Option to select Project (must option) for any PM except PM from HQ
- 4. Edit include/class.queue.php Line 494 to hide unnecessary queues from view of different Managers/Agents
- 5. Edit include/staff/templates/advanced-search-criteria.tmpl.php to fix the input boxes for PM/HQ-PM.
+ 3. Edit include/class.queue.php Line 494 to hide unnecessary queues from view of different Managers/Agents
+ 4. Edit include/staff/templates/advanced-search-criteria.tmpl.php to fix the input boxes for PM/HQ-PM.
 
 
 * Modified class.staff.php and class.user.php to add functionality of password reset maximum attempts(3)
