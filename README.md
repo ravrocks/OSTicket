@@ -109,6 +109,8 @@ Changes-
 
 * Modified class.staff.php and class.user.php to add functionality of password reset maximum attempts(3)
 
+* Modified Project Code in Database
+
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
