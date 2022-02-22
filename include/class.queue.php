@@ -522,7 +522,18 @@ class CustomQueue extends VerySimpleModel {
                                 unset($temp_arx[$indexx]);
                         }
                     }
-                    
+                
+                elseif($thisstaff->ht['lastname']=="Anand Yadav")
+                    {
+                        $temp_arx=$pieces['user__cdata__projectlinked+includes']->ht['choices'];
+                        foreach ($temp_arx as $indexx=>$item) {
+                            if($item=="Jhansi Smart City")
+                                continue;
+                            else
+                                unset($temp_arx[$indexx]);
+                        }
+                    }
+                        
                     $pieces['user__cdata__projectlinked+includes']->ht['choices']=$temp_arx;
                         //error_log(print_r($temp_arx,TRUE));
              }
