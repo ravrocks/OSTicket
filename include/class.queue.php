@@ -522,7 +522,18 @@ class CustomQueue extends VerySimpleModel {
                                 unset($temp_arx[$indexx]);
                         }
                     }
-                    
+                
+                elseif($thisstaff->ht['lastname']=="Anand Yadav")
+                    {
+                        $temp_arx=$pieces['user__cdata__projectlinked+includes']->ht['choices'];
+                        foreach ($temp_arx as $indexx=>$item) {
+                            if($item=="Jhansi Smart City")
+                                continue;
+                            else
+                                unset($temp_arx[$indexx]);
+                        }
+                    }
+                        
                     $pieces['user__cdata__projectlinked+includes']->ht['choices']=$temp_arx;
                         //error_log(print_r($temp_arx,TRUE));
              }
@@ -549,6 +560,18 @@ class CustomQueue extends VerySimpleModel {
                     $temp_arx=$pieces['user__cdata__projectlinked+!includes']->ht['choices'];
                         foreach ($temp_arx as $indexx=>$item) {
                             if($item=="Pune Smart City")
+                                continue;
+                            else
+                                unset($temp_arx[$indexx]);
+                        }
+                        $pieces['user__cdata__projectlinked+!includes']->ht['choices']=$temp_arx;
+                        //error_log(print_r($temp_arx,TRUE));
+                }
+                elseif($thisstaff->ht['lastname']=="Anand Yadav")
+                {
+                    $temp_arx=$pieces['user__cdata__projectlinked+!includes']->ht['choices'];
+                        foreach ($temp_arx as $indexx=>$item) {
+                            if($item=="Jhansi Smart City")
                                 continue;
                             else
                                 unset($temp_arx[$indexx]);
@@ -1570,6 +1593,8 @@ class CustomQueue extends VerySimpleModel {
                         continue;
                         if($q->getId()==49) //Ticket Queue ID for Pune Smart City
                         continue;
+                        if($q->getId()==50) //Ticket Queue ID for Jhansi Smart City
+                        continue;
                     }
                 elseif($namez=='Manager- Atmaram Vitthal Magar')
                     {
@@ -1579,7 +1604,15 @@ class CustomQueue extends VerySimpleModel {
                         continue;
 
                     }
-                
+                elseif($namez=='Manager- Anand Yadav')
+                    {
+                        if($q->getId()==40) //Ticket Queue ID for MY Tickets
+                            $results[] = [ $q, $for_parent($q->getId(),$namez) ];
+                        if($q->getId()!=50) //Ticket Queue ID for Jhansi Smart City
+                        continue;
+
+                    }
+
                 $results[] = [ $q, $for_parent($q->getId(),$namez) ];
             }
             
